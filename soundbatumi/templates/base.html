@@ -1,0 +1,199 @@
+{% load static wagtailcore_tags wagtailuserbar menu_tags i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %}
+    {% if page and page.seo_title %}
+      {{ page.seo_title }}
+    {% elif page and page.title %}
+      {{ page.title }}
+    {% else %}
+      Sound Batumi
+    {% endif %}
+    {% endblock %}
+    {% block title_suffix %}
+    {% wagtail_site as current_site %}
+    {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
+    {% endblock %}</title>
+    {% if page %}
+    <meta name="description" content="{{ page.search_description }}">
+    <meta name="keywords" content=" {{ page.promote_keywords|richtext }}">
+    {% endif %}
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Sound Batumi">
+    <script type="application/ld+json">
+      {
+        "@context": "https://soundbatumi.com/",
+        "@type": "adjara Batumi",
+        "name": "Soundbatumi",
+        "address": {
+          "@type": "Batumi",
+          "streetAddress": "georgia",
+          "addressLocality": "Batumi",
+          "addressRegion": "Ajara",
+          "postalCode": "6010",
+          "addressCountry": "Georgia"
+        },
+        "telephone": "+995559643816",
+        "url": "https://soundbatumi.com/",
+        "image": "{% static 'assets/img/favicon-32x32.png' %}"
+      }
+      </script>
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/favicon.ico' %}" rel="icon">
+  {% comment %} <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon"> {% endcomment %}
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+  <!-- Owl Carousel CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+  <!-- Template Main CSS File -->
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+  {% comment %} {% wagtailuserbar %} {% endcomment %}
+  
+  <!-- Анимированный 3D фон с летающими нотами (только на главной) -->
+  <div id="animated-3d-bg" class="home-only-bg" data-page-type="{% if page %}{{ page.content_type.model }}{% endif %}" data-page-slug="{% if page %}{{ page.slug }}{% endif %}">
+    <!-- Летающие музыкальные ноты в 3D -->
+    <div class="flying-notes-container"></div>
+  </div>
+  
+  <!-- ======= Header ======= -->
+  {% include "heder.html" %}
+
+  <main id="main">
+
+    {% block content %}
+    
+    {% endblock %}
+
+  <!-- ======= Auth Modal ======= -->
+  {% include "blocks/auth_modal.html" %}
+
+  <!-- ======= Quantity Selection Modal ======= -->
+  {% include "blocks/quantity_modal.html" %}
+
+  <!-- ======= Cart Modal ======= -->
+  {% include "blocks/cart_modal.html" %}
+
+  <!-- ======= Checkout Modal ======= -->
+  {% include "blocks/checkout_modal.html" %}
+
+  <!-- ======= Equipment Photo Modal ======= -->
+  {% include "blocks/equipment_photo_modal.html" %}
+
+  <!-- ======= Footer ======= -->
+  {% include "footer.html" %}
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <!-- Owl Carousel JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+  
+  <!-- Language data for JavaScript -->
+  <script>
+    window.LANGUAGE_CODE = '{{ LANGUAGE_CODE }}';
+    window.TRANSLATIONS = {
+      'cart_empty': '{% trans "Cart is empty" %}',
+      'please_enter_name': '{% trans "Please enter your name" %}',
+      'please_enter_phone': '{% trans "Please enter your phone number" %}',
+      'please_enter_address': '{% trans "Please enter delivery address" %}',
+      'processing': '{% trans "Processing..." %}',
+      'confirm_order': '{% trans "Confirm Order" %}',
+      'order_success': '{% trans "Order #%(order_number)s has been successfully created!" %}',
+      'order_accepted': '{% trans "Your order #%(order_number)s has been accepted for processing. A manager will contact you shortly." %}',
+      'error_occurred': '{% trans "An error occurred. Please try again." %}',
+      'add_to_cart': '{% trans "Add to Cart" %}',
+      'quantity': '{% trans "Quantity" %}',
+      'total': '{% trans "Total" %}',
+      'cancel': '{% trans "Cancel" %}',
+      'continue_shopping': '{% trans "Continue Shopping" %}',
+      'checkout': '{% trans "Checkout" %}',
+      'login': '{% trans "Login" %}',
+      'register': '{% trans "Register" %}',
+      'logout': '{% trans "Logout" %}',
+      'admin': '{% trans "Admin" %}',
+      'username': '{% trans "Username" %}',
+      'password': '{% trans "Password" %}',
+      'name': '{% trans "Name" %}',
+      'phone': '{% trans "Phone" %}',
+      'email': '{% trans "Email" %}',
+      'delivery_address': '{% trans "Delivery Address" %}',
+      'order_comment': '{% trans "Order Comment" %}',
+      'total_amount': '{% trans "Total Amount" %}',
+      'passwords_not_match': '{% trans "Passwords do not match" %}',
+      'phone_required': '{% trans "Phone number is required" %}',
+      'messenger_required': '{% trans "Messenger link is required" %}',
+      'registration_success': '{% trans "Registration successful!" %}',
+      'registration_error': '{% trans "Registration error" %}',
+      'form_submit_error': '{% trans "Error submitting form. Please try again." %}',
+      'security_error': '{% trans "Security error. Please refresh the page and try again." %}',
+      'form_elements_not_found': '{% trans "Error: form elements not found. Please refresh the page." %}',
+      'invalid_item_data': '{% trans "Invalid item data format" %}',
+      'item_quantity_error': '{% trans "Item quantity must be greater than 0" %}',
+      'item_price_error': '{% trans "Item price cannot be negative" %}',
+      'invalid_cart_format': '{% trans "Invalid cart data format" %}',
+      'order_creation_error': '{% trans "Error creating order" %}',
+      'order_submit_error': '{% trans "Error submitting order. Please try again." %}',
+      'server_error': '{% trans "Server error" %}',
+      'connection_error': '{% trans "Connection error. Please try again." %}',
+      'enter_username': '{% trans "Enter your username" %}',
+      'enter_password': '{% trans "Enter your password" %}',
+      'repeat_password': '{% trans "Repeat password" %}',
+      'enter_name_or_org': '{% trans "Enter your name or organization name" %}',
+      'enter_phone': '{% trans "Enter phone number for contact" %}',
+      'enter_messenger_link': '{% trans "Enter link to Telegram, WhatsApp or other messenger" %}',
+      'enter_full_address': '{% trans "Enter full delivery address" %}',
+      'specify_delivery_location': '{% trans "Specify the delivery location" %}',
+      'additional_info_optional': '{% trans "Additional information (optional)" %}',
+      'only_letters_numbers': '{% trans "Only letters, numbers and symbols @/./+/-/_" %}',
+      'minimum_8_chars': '{% trans "Minimum 8 characters" %}',
+      'contact_information': '{% trans "Contact Information" %}',
+      'phone_number': '{% trans "Phone Number" %}',
+      'messenger_link': '{% trans "Messenger Link" %}',
+      'name_or_organization': '{% trans "Name or Organization" %}',
+      'confirm_password': '{% trans "Confirm Password" %}',
+      'select_quantity': '{% trans "Select Quantity" %}',
+      'shopping_cart': '{% trans "Shopping Cart" %}',
+      'checkout_title': '{% trans "Checkout" %}',
+      'remove': '{% trans "Remove" %}',
+      'order': '{% trans "Order" %}',
+      'only_available': '{% trans "Only %(quantity)s available" %}',
+      'discount': '{% trans "Discount" %}',
+      'global_discount': '{% trans "Global discount" %}',
+    };
+  </script>
+
+</body>
+
+</html>

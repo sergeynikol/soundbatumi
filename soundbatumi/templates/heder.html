@@ -1,0 +1,26 @@
+{% load static wagtailcore_tags wagtailuserbar menu_tags %}
+
+<header id="header" >
+    <div class="container d-flex align-items-center justify-content-between">
+
+   <div>
+     <a href="/" class="logo"><img src="{% static 'assets/img/Logo sound Batumi gorisontal.webp' %}" alt="" class="img-fluid"></a>
+     </div>
+     <div>
+     <h3 class="text-center"><a href=tel:+995599643816>+995 599643816</a>
+       <a href="https://t.me/sergonikola" class="telegram"><i class="bx bxl-telegram"></i></a>
+       <a href="https://wa.me/+995599643816" class="whatsapp text-success"><i class="bx bxl-whatsapp"></i></a>
+       <a href="https://www.instagram.com/sound_batumi/?hl=ru" class="instagram text-danger"><i class="bx bxl-instagram"></i></a>
+     </h3>
+   </div>
+   <!-- Theme Toggle -->
+   <div class="theme-toggle-wrapper">
+     <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+       <i class="bi bi-sun-fill theme-icon-light"></i>
+       <i class="bi bi-moon-fill theme-icon-dark"></i>
+     </button>
+   </div> 
+    {% get_site_root as site_root%}
+    {% menus parent=site_root %}
+    </div>
+</header>

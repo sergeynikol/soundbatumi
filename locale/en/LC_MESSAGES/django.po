@@ -1,0 +1,835 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-05 17:59+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: home/models.py:24
+msgid "Настройки слайдера"
+msgstr ""
+
+#: home/models.py:26
+msgid "Настройки для слайдера на главной странице"
+msgstr ""
+
+#: home/models.py:32
+msgid "Карточка меню"
+msgstr ""
+
+#: home/models.py:34
+msgid "Ключевые слова"
+msgstr ""
+
+#: home/models.py:132
+msgid "Активировать глобальную скидку"
+msgstr ""
+
+#: home/models.py:134
+msgid "Процент скидки (%)"
+msgstr ""
+
+#: home/models.py:138
+msgid "Процент скидки от 0 до 100"
+msgstr ""
+
+#: home/models.py:140 home/models.py:209
+msgid "Обновлено"
+msgstr ""
+
+#: home/models.py:143 home/models.py:144
+msgid "Настройки скидок на оборудование"
+msgstr ""
+
+#: home/models.py:172
+msgid "IP адрес"
+msgstr ""
+
+#: home/models.py:173
+msgid "User Agent"
+msgstr ""
+
+#: home/models.py:174
+msgid "Дата посещения"
+msgstr ""
+
+#: home/models.py:175
+msgid "Время посещения"
+msgstr ""
+
+#: home/models.py:176
+msgid "Путь"
+msgstr ""
+
+#: home/models.py:177
+msgid "Реферер"
+msgstr ""
+
+#: home/models.py:180
+msgid "Посещение"
+msgstr ""
+
+#: home/models.py:181
+msgid "Посещения"
+msgstr ""
+
+#: home/models.py:206
+msgid "Дата"
+msgstr ""
+
+#: home/models.py:207
+msgid "Уникальные посещения"
+msgstr ""
+
+#: home/models.py:208
+msgid "Всего посещений"
+msgstr ""
+
+#: home/models.py:212 home/models.py:213
+msgid "Статистика посещений"
+msgstr ""
+
+#: home/models.py:233
+msgid "Ожидает обработки"
+msgstr ""
+
+#: home/models.py:234
+msgid "В обработке"
+msgstr ""
+
+#: home/models.py:235
+msgid "Завершен"
+msgstr ""
+
+#: home/models.py:236
+msgid "Отменен"
+msgstr ""
+
+#: home/models.py:240
+msgid "Номер заказа"
+msgstr ""
+
+#: home/models.py:244
+msgid "Уникальный номер заказа"
+msgstr ""
+
+#: home/models.py:247
+msgid "Время создания"
+msgstr ""
+
+#: home/models.py:252
+msgid "Адрес доставки"
+msgstr ""
+
+#: home/models.py:253
+msgid "Место, куда нужно доставить заказ"
+msgstr ""
+
+#: home/models.py:263 home/models.py:393
+msgid "Пользователь"
+msgstr ""
+
+#: home/models.py:264
+msgid "Пользователь, оформивший заказ (если зарегистрирован)"
+msgstr ""
+
+#: home/models.py:269
+msgid "Имя клиента"
+msgstr ""
+
+#: home/models.py:273
+msgid "Телефон"
+msgstr ""
+
+#: home/models.py:277 soundbatumi/templates/base.html:152
+#: soundbatumi/templates/blocks/checkout_modal.html:43
+msgid "Email"
+msgstr ""
+
+#: home/models.py:282
+msgid "Комментарий клиента"
+msgstr ""
+
+#: home/models.py:289
+msgid "Статус заказа"
+msgstr ""
+
+#: home/models.py:295
+msgid "Общая сумма заказа"
+msgstr ""
+
+#: home/models.py:302 home/models.py:336
+msgid "Заказ"
+msgstr ""
+
+#: home/models.py:303
+msgid "Заказы"
+msgstr ""
+
+#: home/models.py:339
+msgid "Наименование оборудования"
+msgstr ""
+
+#: home/models.py:343
+msgid "ID оборудования"
+msgstr ""
+
+#: home/models.py:349
+msgid "Количество"
+msgstr ""
+
+#: home/models.py:353
+msgid "Цена за единицу"
+msgstr ""
+
+#: home/models.py:358
+msgid "Общая цена"
+msgstr ""
+
+#: home/models.py:363
+msgid "Изображение оборудования"
+msgstr ""
+
+#: home/models.py:369
+msgid "Позиция заказа"
+msgstr ""
+
+#: home/models.py:370
+msgid "Позиции заказа"
+msgstr ""
+
+#: home/models.py:396
+msgid "Номер телефона"
+msgstr ""
+
+#: home/models.py:400
+msgid "Номер телефона для связи"
+msgstr ""
+
+#: home/models.py:403
+msgid "Ссылка на мессенджер"
+msgstr ""
+
+#: home/models.py:406
+msgid "Ссылка на Telegram, WhatsApp или другой мессенджер"
+msgstr ""
+
+#: home/models.py:409
+msgid "Имя или название организации"
+msgstr ""
+
+#: home/models.py:411
+msgid "Ваше имя или название организации"
+msgstr ""
+
+#: home/models.py:414
+msgid "Дата создания"
+msgstr ""
+
+#: home/models.py:418
+msgid "Дата обновления"
+msgstr ""
+
+#: home/models.py:423
+msgid "Профиль пользователя"
+msgstr ""
+
+#: home/models.py:424
+msgid "Профили пользователей"
+msgstr ""
+
+#: home/models.py:434
+msgid "Необходимо указать либо номер телефона, либо ссылку на мессенджер."
+msgstr ""
+
+#: home/templates/home/welcome_page.html:6
+msgid "Visit the Wagtail website"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:15
+msgid "View the release notes"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:27
+msgid "Welcome to your new Wagtail site!"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:28
+msgid ""
+"Please feel free to <a href=\"https://github.com/wagtail/wagtail/wiki/"
+"Slack\">join our community on Slack</a>, or get started with one of the "
+"links below."
+msgstr ""
+
+#: home/templates/home/welcome_page.html:35
+msgid "Wagtail Documentation"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:36
+msgid "Topics, references, & how-tos"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:42
+msgid "Tutorial"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:43
+msgid "Build your first Wagtail site"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:49
+msgid "Admin Interface"
+msgstr ""
+
+#: home/templates/home/welcome_page.html:50
+msgid "Create your superuser first!"
+msgstr ""
+
+#: home/views.py:37
+msgid "Please enter your username."
+msgstr ""
+
+#: home/views.py:44
+msgid "Please enter your password."
+msgstr ""
+
+#: home/views.py:55
+#, python-format
+msgid "Welcome, %(username)s!"
+msgstr ""
+
+#: home/views.py:67
+msgid "Your account is deactivated. Please contact administrator."
+msgstr ""
+
+#: home/views.py:72
+msgid "Invalid username or password."
+msgstr ""
+
+#: home/views.py:86
+msgid "You have successfully logged out."
+msgstr ""
+
+#: home/views.py:99
+#, python-format
+msgid "Invalid Content-Type: %(content_type)s. Expected application/json"
+msgstr ""
+
+#: home/views.py:108
+#, python-format
+msgid "Invalid JSON format: %(error)s"
+msgstr ""
+
+#: home/views.py:123
+msgid "Delivery address is required"
+msgstr ""
+
+#: home/views.py:125
+msgid "Delivery address must not exceed 1000 characters"
+msgstr ""
+
+#: home/views.py:128
+msgid "Customer name is required"
+msgstr ""
+
+#: home/views.py:130
+msgid "Customer name must not exceed 255 characters"
+msgstr ""
+
+#: home/views.py:133 home/views.py:299 soundbatumi/templates/base.html:157
+msgid "Phone number is required"
+msgstr ""
+
+#: home/views.py:135 home/views.py:301
+msgid "Phone number must not exceed 50 characters"
+msgstr ""
+
+#: home/views.py:139
+msgid "Email must not exceed 254 characters"
+msgstr ""
+
+#: home/views.py:145
+msgid "Invalid email format"
+msgstr ""
+
+#: home/views.py:148
+msgid "Comment must not exceed 2000 characters"
+msgstr ""
+
+#: home/views.py:151 soundbatumi/templates/base.html:129
+#: soundbatumi/templates/blocks/cart_modal.html:19
+msgid "Cart is empty"
+msgstr ""
+
+#: home/views.py:153 soundbatumi/templates/base.html:167
+msgid "Invalid cart data format"
+msgstr ""
+
+#: home/views.py:193 soundbatumi/templates/base.html:165
+msgid "Item quantity must be greater than 0"
+msgstr ""
+
+#: home/views.py:196 soundbatumi/templates/base.html:166
+msgid "Item price cannot be negative"
+msgstr ""
+
+#: home/views.py:203
+msgid "No name"
+msgstr ""
+
+#: home/views.py:211
+#, python-format
+msgid "Invalid item data format: %(error)s"
+msgstr ""
+
+#: home/views.py:219
+#, python-format
+msgid ""
+"Your order #%(order_number)s has been accepted for processing. A manager "
+"will contact you shortly."
+msgstr ""
+
+#: home/views.py:221
+#, python-format
+msgid ""
+"Order #%(order_number)s has been successfully created! We will contact you "
+"shortly."
+msgstr ""
+
+#: home/views.py:237
+#, python-format
+msgid "Error creating order: %(error)s"
+msgstr ""
+
+#: home/views.py:269
+msgid "Username is required"
+msgstr ""
+
+#: home/views.py:271
+msgid "Username must contain at least 3 characters"
+msgstr ""
+
+#: home/views.py:273
+msgid "Username must not exceed 150 characters"
+msgstr ""
+
+#: home/views.py:275
+msgid "Username can only contain letters, numbers and symbols: @/./+/-/_"
+msgstr ""
+
+#: home/views.py:277
+msgid "A user with this username already exists"
+msgstr ""
+
+#: home/views.py:281
+msgid "Password is required"
+msgstr ""
+
+#: home/views.py:283
+msgid "Password must contain at least 8 characters"
+msgstr ""
+
+#: home/views.py:285
+msgid "Password must not exceed 128 characters"
+msgstr ""
+
+#: home/views.py:288 soundbatumi/templates/base.html:156
+msgid "Passwords do not match"
+msgstr ""
+
+#: home/views.py:292
+msgid "Name or organization is required"
+msgstr ""
+
+#: home/views.py:294
+msgid "Organization name must not exceed 255 characters"
+msgstr ""
+
+#: home/views.py:305 soundbatumi/templates/base.html:158
+msgid "Messenger link is required"
+msgstr ""
+
+#: home/views.py:307
+msgid "Messenger link must not exceed 200 characters"
+msgstr ""
+
+#: home/views.py:309
+msgid "Messenger link must start with http:// or https://"
+msgstr ""
+
+#: home/views.py:312
+msgid "Either phone number or messenger link must be provided"
+msgstr ""
+
+#: home/views.py:346
+#, python-format
+msgid "Welcome, %(username)s! Registration successful."
+msgstr ""
+
+#: home/views.py:350
+#, python-format
+msgid "Registration successful! Welcome, %(username)s!"
+msgstr ""
+
+#: home/views.py:360
+#, python-format
+msgid "Validation error: %(error)s"
+msgstr ""
+
+#: home/views.py:372
+msgid "An error occurred during registration. Please try again."
+msgstr ""
+
+#: soundbatumi/settings/base.py:186
+msgid "English"
+msgstr ""
+
+#: soundbatumi/settings/base.py:187
+msgid "Georgian"
+msgstr ""
+
+#: soundbatumi/settings/base.py:188
+msgid "Russian"
+msgstr ""
+
+#: soundbatumi/templates/auth/login.html:12
+msgid "Authorization"
+msgstr ""
+
+#: soundbatumi/templates/auth/login.html:28 soundbatumi/templates/base.html:148
+#: soundbatumi/templates/blocks/auth_modal.html:47
+#: soundbatumi/templates/blocks/auth_modal.html:78
+msgid "Username"
+msgstr ""
+
+#: soundbatumi/templates/auth/login.html:33 soundbatumi/templates/base.html:149
+#: soundbatumi/templates/blocks/auth_modal.html:54
+#: soundbatumi/templates/blocks/auth_modal.html:86
+msgid "Password"
+msgstr ""
+
+#: soundbatumi/templates/auth/login.html:39 soundbatumi/templates/base.html:144
+#: soundbatumi/templates/blocks/auth_modal.html:11
+#: soundbatumi/templates/blocks/auth_modal.html:61
+#: soundbatumi/templates/blocks/menu.html:88
+msgid "Login"
+msgstr ""
+
+#: soundbatumi/templates/auth/login.html:45
+msgid "Back to Home"
+msgstr ""
+
+#: soundbatumi/templates/base.html:130
+msgid "Please enter your name"
+msgstr ""
+
+#: soundbatumi/templates/base.html:131
+msgid "Please enter your phone number"
+msgstr ""
+
+#: soundbatumi/templates/base.html:132
+msgid "Please enter delivery address"
+msgstr ""
+
+#: soundbatumi/templates/base.html:133
+msgid "Processing..."
+msgstr ""
+
+#: soundbatumi/templates/base.html:134
+#: soundbatumi/templates/blocks/checkout_modal.html:79
+msgid "Confirm Order"
+msgstr ""
+
+#: soundbatumi/templates/base.html:135
+#, python-format
+msgid "Order #%%(order_number)s has been successfully created!"
+msgstr ""
+
+#: soundbatumi/templates/base.html:136
+#, python-format
+msgid ""
+"Your order #%%(order_number)s has been accepted for processing. A manager "
+"will contact you shortly."
+msgstr ""
+
+#: soundbatumi/templates/base.html:137
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: soundbatumi/templates/base.html:138
+#: soundbatumi/templates/blocks/quantity_modal.html:49
+msgid "Add to Cart"
+msgstr ""
+
+#: soundbatumi/templates/base.html:139
+#: soundbatumi/templates/blocks/quantity_modal.html:24
+msgid "Quantity"
+msgstr ""
+
+#: soundbatumi/templates/base.html:140
+#: soundbatumi/templates/blocks/cart_modal.html:25
+#: soundbatumi/templates/blocks/quantity_modal.html:41
+msgid "Total"
+msgstr ""
+
+#: soundbatumi/templates/base.html:141
+#: soundbatumi/templates/blocks/checkout_modal.html:76
+#: soundbatumi/templates/blocks/quantity_modal.html:47
+msgid "Cancel"
+msgstr ""
+
+#: soundbatumi/templates/base.html:142
+#: soundbatumi/templates/blocks/cart_modal.html:27
+msgid "Continue Shopping"
+msgstr ""
+
+#: soundbatumi/templates/base.html:143 soundbatumi/templates/base.html:190
+#: soundbatumi/templates/blocks/cart_modal.html:28
+#: soundbatumi/templates/blocks/checkout_modal.html:9
+msgid "Checkout"
+msgstr ""
+
+#: soundbatumi/templates/base.html:145
+#: soundbatumi/templates/blocks/auth_modal.html:140
+msgid "Register"
+msgstr ""
+
+#: soundbatumi/templates/base.html:146
+#: soundbatumi/templates/blocks/menu.html:76
+msgid "Logout"
+msgstr ""
+
+#: soundbatumi/templates/base.html:147
+#: soundbatumi/templates/blocks/menu.html:83
+msgid "Admin"
+msgstr ""
+
+#: soundbatumi/templates/base.html:150
+#: soundbatumi/templates/blocks/checkout_modal.html:25
+msgid "Name"
+msgstr ""
+
+#: soundbatumi/templates/base.html:151
+#: soundbatumi/templates/blocks/auth_modal.html:113
+#: soundbatumi/templates/blocks/checkout_modal.html:34
+msgid "Phone"
+msgstr ""
+
+#: soundbatumi/templates/base.html:153
+#: soundbatumi/templates/blocks/checkout_modal.html:50
+msgid "Delivery Address"
+msgstr ""
+
+#: soundbatumi/templates/base.html:154
+#: soundbatumi/templates/blocks/checkout_modal.html:60
+msgid "Order Comment"
+msgstr ""
+
+#: soundbatumi/templates/base.html:155
+#: soundbatumi/templates/blocks/checkout_modal.html:67
+msgid "Total Amount"
+msgstr ""
+
+#: soundbatumi/templates/base.html:159
+msgid "Registration successful!"
+msgstr ""
+
+#: soundbatumi/templates/base.html:160
+msgid "Registration error"
+msgstr ""
+
+#: soundbatumi/templates/base.html:161
+msgid "Error submitting form. Please try again."
+msgstr ""
+
+#: soundbatumi/templates/base.html:162
+msgid "Security error. Please refresh the page and try again."
+msgstr ""
+
+#: soundbatumi/templates/base.html:163
+msgid "Error: form elements not found. Please refresh the page."
+msgstr ""
+
+#: soundbatumi/templates/base.html:164
+msgid "Invalid item data format"
+msgstr ""
+
+#: soundbatumi/templates/base.html:168
+msgid "Error creating order"
+msgstr ""
+
+#: soundbatumi/templates/base.html:169
+msgid "Error submitting order. Please try again."
+msgstr ""
+
+#: soundbatumi/templates/base.html:170
+msgid "Server error"
+msgstr ""
+
+#: soundbatumi/templates/base.html:171
+msgid "Connection error. Please try again."
+msgstr ""
+
+#: soundbatumi/templates/base.html:172
+#: soundbatumi/templates/blocks/auth_modal.html:49
+#: soundbatumi/templates/blocks/auth_modal.html:80
+msgid "Enter your username"
+msgstr ""
+
+#: soundbatumi/templates/base.html:173
+#: soundbatumi/templates/blocks/auth_modal.html:56
+#: soundbatumi/templates/blocks/auth_modal.html:88
+msgid "Enter your password"
+msgstr ""
+
+#: soundbatumi/templates/base.html:174
+#: soundbatumi/templates/blocks/auth_modal.html:96
+msgid "Repeat password"
+msgstr ""
+
+#: soundbatumi/templates/base.html:175
+#: soundbatumi/templates/blocks/auth_modal.html:103
+msgid "Enter your name or organization name"
+msgstr ""
+
+#: soundbatumi/templates/base.html:176
+#: soundbatumi/templates/blocks/auth_modal.html:127
+msgid "Enter phone number for contact"
+msgstr ""
+
+#: soundbatumi/templates/base.html:177
+#: soundbatumi/templates/blocks/auth_modal.html:135
+msgid "Enter link to Telegram, WhatsApp or other messenger"
+msgstr ""
+
+#: soundbatumi/templates/base.html:178
+#: soundbatumi/templates/blocks/checkout_modal.html:52
+msgid "Enter full delivery address"
+msgstr ""
+
+#: soundbatumi/templates/base.html:179
+#: soundbatumi/templates/blocks/checkout_modal.html:54
+msgid "Specify the delivery location"
+msgstr ""
+
+#: soundbatumi/templates/base.html:180
+#: soundbatumi/templates/blocks/checkout_modal.html:62
+msgid "Additional information (optional)"
+msgstr ""
+
+#: soundbatumi/templates/base.html:181
+#: soundbatumi/templates/blocks/auth_modal.html:81
+msgid "Only letters, numbers and symbols @/./+/-/_"
+msgstr ""
+
+#: soundbatumi/templates/base.html:182
+#: soundbatumi/templates/blocks/auth_modal.html:89
+msgid "Minimum 8 characters"
+msgstr ""
+
+#: soundbatumi/templates/base.html:183
+#: soundbatumi/templates/blocks/auth_modal.html:108
+msgid "Contact Information"
+msgstr ""
+
+#: soundbatumi/templates/base.html:184
+#: soundbatumi/templates/blocks/auth_modal.html:124
+msgid "Phone Number"
+msgstr ""
+
+#: soundbatumi/templates/base.html:185
+#: soundbatumi/templates/blocks/auth_modal.html:132
+msgid "Messenger Link"
+msgstr ""
+
+#: soundbatumi/templates/base.html:186
+#: soundbatumi/templates/blocks/auth_modal.html:101
+msgid "Name or Organization"
+msgstr ""
+
+#: soundbatumi/templates/base.html:187
+#: soundbatumi/templates/blocks/auth_modal.html:94
+msgid "Confirm Password"
+msgstr ""
+
+#: soundbatumi/templates/base.html:188
+#: soundbatumi/templates/blocks/quantity_modal.html:9
+msgid "Select Quantity"
+msgstr ""
+
+#: soundbatumi/templates/base.html:189
+#: soundbatumi/templates/blocks/cart_modal.html:9
+msgid "Shopping Cart"
+msgstr ""
+
+#: soundbatumi/templates/base.html:191
+msgid "Remove"
+msgstr ""
+
+#: soundbatumi/templates/base.html:192
+#: soundbatumi/templates/blocks/listeq.html:112
+msgid "Order"
+msgstr ""
+
+#: soundbatumi/templates/base.html:193
+#, python-format
+msgid "Only %%(quantity)s available"
+msgstr ""
+
+#: soundbatumi/templates/base.html:194
+#: soundbatumi/templates/blocks/listeq.html:79
+msgid "Discount"
+msgstr ""
+
+#: soundbatumi/templates/base.html:195
+#: soundbatumi/templates/blocks/listeq.html:81
+msgid "Global discount"
+msgstr ""
+
+#: soundbatumi/templates/blocks/auth_modal.html:16
+msgid "Registration"
+msgstr ""
+
+#: soundbatumi/templates/blocks/auth_modal.html:117
+msgid "Messenger"
+msgstr ""
+
+#: soundbatumi/templates/blocks/checkout_modal.html:27
+msgid "Enter your name"
+msgstr ""
+
+#: soundbatumi/templates/blocks/links_futer.html:2
+msgid "Pick-up point"
+msgstr ""
+
+#: soundbatumi/templates/footer.html:5
+msgid "Contact"
+msgstr ""
+
+#: soundbatumi/templates/footer.html:6
+msgid "We work around the clock"
+msgstr ""
+
+#: soundbatumi/templates/footer.html:13
+msgid "Artists we worked with"
+msgstr ""
+
+#: soundbatumi/templates/footer.html:33
+msgid "Links"
+msgstr ""
+
+#: soundbatumi/templates/footer.html:40
+msgid "Our partners"
+msgstr ""

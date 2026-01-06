@@ -1,0 +1,65 @@
+{% load static wagtailimages_tags wagtailcore_tags menu_tags %}
+
+
+
+<div class="col-md-6 col-lg-3 col-xl-3 mb-5" data-aos="fade-up" data-aos-delay="100">
+  {% extract_page_from_richtext self.external_url as linked_page %}
+  {% comment %} Пытаемся найти страницу из меню по тексту карточки {% endcomment %}
+  {% if not linked_page %}
+    {% find_menu_page_by_text self.external_url as linked_page %}
+  {% endif %}
+  {% if linked_page %}
+    <div class="modern-card">
+      <div class="modern-card-bg"></div>
+      <div class="modern-card-glow"></div>
+      <a href="{% pageurl linked_page %}" class="modern-card-link" title="Перейти на страницу: {{ linked_page.title }}">
+        <div class="modern-card-image-container">
+          <div class="modern-card-image-wrapper">
+            {% image value.photo original class="modern-card-image" %}
+            <div class="modern-card-overlay"></div>
+            <div class="modern-card-badge">
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+        <div class="modern-card-content">
+          {% if linked_page %}
+            <h3 class="modern-card-title">{{ linked_page.title }}</h3>
+          {% else %}
+            <h3 class="modern-card-title">{{ self.external_url|striptags }}</h3>
+          {% endif %}
+          {% if self.discription %}
+            <p class="modern-card-description">{{ self.discription|striptags }}</p>
+          {% endif %}
+          <div class="modern-card-footer">
+            <span class="modern-card-cta">Подробнее</span>
+            <i class="bi bi-arrow-right-circle modern-card-arrow"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% else %}
+    {% comment %} Если страница не найдена, показываем карточку без ссылки {% endcomment %}
+    <div class="modern-card">
+      <div class="modern-card-bg"></div>
+      <div class="modern-card-glow"></div>
+      <div class="modern-card-image-container">
+        <div class="modern-card-image-wrapper">
+          {% image value.photo original class="modern-card-image" %}
+          <div class="modern-card-overlay"></div>
+        </div>
+      </div>
+      <div class="modern-card-content">
+        {% if self.external_url %}
+          <h3 class="modern-card-title">{{ self.external_url|striptags }}</h3>
+        {% endif %}
+        {% if self.discription %}
+          <p class="modern-card-description">{{ self.discription }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+
+

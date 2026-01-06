@@ -1,0 +1,85 @@
+{% load static i18n %}
+
+<!-- Checkout Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content checkout-modal-content">
+      <div class="modal-header checkout-modal-header">
+        <h5 class="modal-title" id="checkoutModalLabel">
+          <i class="bi bi-clipboard-check"></i> {% trans "Checkout" %}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="checkoutForm">
+        {% csrf_token %}
+        <div class="modal-body checkout-modal-body">
+          <div id="checkoutError" class="alert alert-danger" style="display: none;"></div>
+          <div id="checkoutSuccess" class="alert alert-success" style="display: none;"></div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="customerName">
+                  <i class="bi bi-person"></i> {% trans "Name" %} <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control checkout-input" id="customerName" name="customer_name" required placeholder="{% trans 'Enter your name' %}">
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="customerPhone">
+                  <i class="bi bi-telephone"></i> {% trans "Phone" %} <span class="text-danger">*</span>
+                </label>
+                <input type="tel" class="form-control checkout-input" id="customerPhone" name="customer_phone" required placeholder="+995 XXX XXX XXX">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="customerEmail">
+              <i class="bi bi-envelope"></i> {% trans "Email" %}
+            </label>
+            <input type="email" class="form-control checkout-input" id="customerEmail" name="customer_email" placeholder="example@email.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="deliveryAddress">
+              <i class="bi bi-geo-alt"></i> {% trans "Delivery Address" %} <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control checkout-input" id="deliveryAddress" name="delivery_address" rows="3" required placeholder="{% trans 'Enter full delivery address' %}"></textarea>
+            <small class="form-text text-muted">
+              <i class="bi bi-info-circle"></i> {% trans "Specify the delivery location" %}
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label for="customerComment">
+              <i class="bi bi-chat-left-text"></i> {% trans "Order Comment" %}
+            </label>
+            <textarea class="form-control checkout-input" id="customerComment" name="customer_comment" rows="3" placeholder="{% trans 'Additional information (optional)' %}"></textarea>
+          </div>
+          
+          <div class="checkout-summary">
+            <div class="summary-header">
+              <i class="bi bi-receipt-cutoff"></i> {% trans "Total Amount" %}
+            </div>
+            <div class="summary-amount">
+              <span id="checkoutTotal">0.00</span> <span class="currency">₾</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer checkout-modal-footer">
+          <button type="button" class="btn btn-secondary checkout-btn-cancel" data-dismiss="modal">
+            <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
+          </button>
+          <button type="submit" class="btn btn-primary checkout-btn-submit" id="submitOrderBtn">
+            <i class="bi bi-check-circle"></i> {% trans "Confirm Order" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

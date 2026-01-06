@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static wagtailcore_tags %}
+{% block content %}
+  <!-- ======= Main Title ======= -->
+  {% if page.banner_slider_settings %}
+    {% for block in page.banner_slider_settings %}
+      {% if block.block_type == 'banner_slider' %}
+        {% if block.value.main_title %}
+          <div class="main-page-title">
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  {{ block.value.main_title|richtext }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  
+  <!-- ======= Banner Slider ======= -->
+  {% if page.banner_slider_settings %}
+    {% for block in page.banner_slider_settings %}
+      {% if block.block_type == 'banner_slider' %}
+        {% include_block block %}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    {% include "blocks/banner_slider.html" %}
+  {% endif %}
+  
+  {% include "home/cards.html" %}
+{% endblock content %}
+ 

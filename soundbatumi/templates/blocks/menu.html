@@ -1,0 +1,99 @@
+{% load static wagtailcore_tags wagtailimages_tags menu_tags  i18n %}
+<nav id="navbar" class="navbar">
+    <ul>
+      {% for menuitem in menuitems %}
+          <li><a class="nav-link scrollto " href="{% pageurl menuitem.localized %}"><H6>{{ menuitem.localized }}</h6></a></li>
+      {% endfor %}
+        {% comment %} <li class="dropdown nav-link scrollto"><span><img class='set-icon' src="{% static 'assets/img/icons/free-icon-foreign-language-5332986.png' %}" id="navbarDropdown" alt="settings"></span></a> {% endcomment %}
+                
+             </li> 
+             <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img class='set-icon' src="{% static 'assets/img/icons/free-icon-foreign-language-5332986.png' %}" id="navbarDropdown" alt="settings">
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  {% get_current_language as LANGUAGE_CODE %}
+                  {% get_available_languages as LANGUAGES %}
+                  {% get_language_info_list for LANGUAGES as languages %}
+
+                  {% for lang in languages %}
+                    {% if current_page %}
+                      {# Пытаемся найти локализованную версию текущей страницы #}
+                      {% get_page_translation current_page lang.code as translated_page %}
+                      {% if translated_page %}
+                        <a class="dropdown dropdown-item scrolltoy" href="{% pageurl translated_page %}">
+                          {% if lang.code == 'ru' %}
+                            <img class='set-icon' src="{% static 'assets/img/icons/russia.png' %}" alt="settings">{{ lang.name_local }}
+                          {% elif lang.code == 'ka' %}
+                            <img class='set-icon' src="{% static 'assets/img/icons/free-icon-georgia-317186.png' %}" alt="settings">{{ lang.name_local }}
+                          {% elif lang.code == 'en' %}
+                            <img class='set-icon' src="{% static 'assets/img/icons/free-icon-usa-8281538.png' %}" alt="settings">{{ lang.name_local }}
+                          {% endif %}
+                        </a>
+                      {% else %}
+                        {# Если локализованная версия не найдена, используем главную страницу #}
+                        <a class="dropdown dropdown-item scrolltoy" href="/{{ lang.code }}/">
+                          {% if lang.code == 'ru' %}
+                            <img class='set-icon' src="{% static 'assets/img/icons/russia.png' %}" alt="settings">{{ lang.name_local }}
+                          {% elif lang.code == 'ka' %}
+                            <img class='set-icon' src="{% static 'assets/img/icons/free-icon-georgia-317186.png' %}" alt="settings">{{ lang.name_local }}
+                          {% elif lang.code == 'en' %}
+                            <img class='set-icon' src="{% static 'assets/img/icons/free-icon-usa-8281538.png' %}" alt="settings">{{ lang.name_local }}
+                          {% endif %}
+                        </a>
+                      {% endif %}
+                    {% else %}
+                      {# Если текущей страницы нет, используем главную #}
+                      <a class="dropdown dropdown-item scrolltoy" href="/{{ lang.code }}/">
+                        {% if lang.code == 'ru' %}
+                          <img class='set-icon' src="{% static 'assets/img/icons/russia.png' %}" alt="settings">{{ lang.name_local }}
+                        {% elif lang.code == 'ka' %}
+                          <img class='set-icon' src="{% static 'assets/img/icons/free-icon-georgia-317186.png' %}" alt="settings">{{ lang.name_local }}
+                        {% elif lang.code == 'en' %}
+                          <img class='set-icon' src="{% static 'assets/img/icons/free-icon-usa-8281538.png' %}" alt="settings">{{ lang.name_local }}
+                        {% endif %}
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                  
+                 
+              </div>
+            </li>
+            {% comment %} Кнопка авторизации {% endcomment %}
+            <li class="nav-item auth-buttons-container">
+              {% if user.is_authenticated %}
+                <div class="nav-link dropdown auth-btn-user">
+                  <a class="dropdown-toggle auth-btn-trigger auth-btn-user-link" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i> <span class="auth-btn-text">{{ user.username }}</span>
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="userDropdown">
+                    <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                        <i class="bi bi-box-arrow-right"></i> {% trans "Logout" %}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                {% if user.is_superuser %}
+                  <a href="{% url 'wagtailadmin_home' %}" class="nav-link auth-btn-admin">
+                    <i class="bi bi-gear-fill"></i> <span class="auth-btn-text">{% trans "Admin" %}</span>
+                  </a>
+                {% endif %}
+              {% else %}
+                <button class="nav-link auth-btn-trigger" data-toggle="modal" data-target="#authModal">
+                  <i class="bi bi-box-arrow-in-right"></i> <span class="auth-btn-text">{% trans "Login" %}</span>
+                </button>
+              {% endif %}
+            </li>
+            {% comment %} Кнопка корзины {% endcomment %}
+            <li class="nav-item cart-button-container">
+              <a href="#" class="nav-link cart-btn" id="cartButton" role="button" data-toggle="modal" data-target="#cartModal">
+                <i class="bi bi-cart3"></i>
+                <span class="cart-count-badge" id="cartCount">0</span>
+              </a>
+            </li>
+          </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+</nav><!-- .navbar -->

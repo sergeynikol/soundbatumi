@@ -1,0 +1,11 @@
+{% load static wagtailcore_tags  %}
+
+<section id="hero" class="scrollable-content elem" >
+        {% for block in page.diskription_equipment %}
+            {% include_block block %}
+        {% endfor %} 
+    
+        {% for block in page.element_equipment %}
+            {% include_block block %}
+        {% endfor %} 
+</section>

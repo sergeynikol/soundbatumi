@@ -1,0 +1,5 @@
+{% load static wagtailcore_tags %}
+
+{% for portner in portners %}
+        <li><i class="bx bx-chevron-right"></i> <a href={{portner.url_potner_page}}>{{portner.text_link_portner}}</a></li>
+{% endfor %}       

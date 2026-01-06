@@ -1,0 +1,55 @@
+{% load static i18n %}
+
+<!-- Quantity Selection Modal -->
+<div class="modal fade" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content quantity-modal-content">
+      <div class="modal-header quantity-modal-header">
+        <h5 class="modal-title" id="quantityModalLabel">
+          <i class="bi bi-cart-plus"></i> {% trans "Select Quantity" %}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body quantity-modal-body">
+        <div class="quantity-item-preview">
+          <img id="quantityItemImage" src="" alt="" class="quantity-item-image">
+          <div class="quantity-item-details">
+            <h6 id="quantityItemName" class="quantity-item-name"></h6>
+            <div id="quantityItemPrice" class="quantity-item-price"></div>
+          </div>
+        </div>
+        <div class="quantity-selector-wrapper">
+          <label for="quantityInput" class="quantity-label">{% trans "Quantity" %}:</label>
+          <div class="quantity-controls">
+            <button type="button" class="quantity-btn quantity-btn-decrease" id="quantityDecrease">
+              <i class="bi bi-dash"></i>
+            </button>
+            <input type="number" 
+                   id="quantityInput" 
+                   class="quantity-input" 
+                   value="1" 
+                   min="1" 
+                   max="999"
+                   readonly>
+            <button type="button" class="quantity-btn quantity-btn-increase" id="quantityIncrease">
+              <i class="bi bi-plus"></i>
+            </button>
+          </div>
+          <div class="quantity-total">
+            <span>{% trans "Total" %}: <strong id="quantityTotal">0</strong> ₾</span>
+          </div>
+        </div>
+        <div id="quantityError" class="quantity-error" style="display: none;"></div>
+      </div>
+      <div class="modal-footer quantity-modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-primary" id="addToCartBtn">
+          <i class="bi bi-cart-plus"></i> {% trans "Add to Cart" %}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

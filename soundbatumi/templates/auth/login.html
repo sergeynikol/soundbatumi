@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static wagtailcore_tags i18n %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+<section id="hero" class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="icon-box" style="background: rgba(255, 255, 255, 0.9); padding: 40px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+          <h2 class="text-center mb-4" style="color: #124265;">{% trans "Authorization" %}</h2>
+          
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+          
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.GET.next|default:'/' }}">
+            
+            <div class="mb-3">
+              <label for="username" class="form-label" style="color: #124265; font-weight: 600;">{% trans "Username" %}</label>
+              <input type="text" class="form-control" id="username" name="username" required autofocus>
+            </div>
+            
+            <div class="mb-4">
+              <label for="password" class="form-label" style="color: #124265; font-weight: 600;">{% trans "Password" %}</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary" style="background: #2487ce; border: none; padding: 12px; font-size: 16px; font-weight: 600;">
+                {% trans "Login" %}
+              </button>
+            </div>
+          </form>
+          
+          <div class="text-center mt-4">
+            <a href="/" style="color: #2487ce; text-decoration: none;">{% trans "Back to Home" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

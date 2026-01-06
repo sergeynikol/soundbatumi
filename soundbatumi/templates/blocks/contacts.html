@@ -1,0 +1,12 @@
+{% load static wagtailimages_tags i18n %}
+{% load i18n %}
+
+{% comment %} {% if page.get_translations.live %} {% endcomment %}
+    {% for cotact in contakts %}
+        <p>
+            <strong>{{ cotact.name}}</strong><br>
+            <i><a href={{ cotact.url_contact_data}}>{{ cotact.phone }}</a></i>
+            <strong>{{ cotact.discription }}</strong><br><hr>
+        </p>
+    {% endfor %}
+{% comment %} {% endif %} {% endcomment %}

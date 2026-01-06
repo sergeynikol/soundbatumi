@@ -1,0 +1,123 @@
+{% load static wagtailimages_tags wagtailcore_tags price_tags i18n %}
+
+<div class="container">
+  <div class="row" id="{{self.smallname_equipment}}">
+    <div class="col-12">
+      <div class="icon-list" >
+      <div class="form-group form-control">
+        <div class="row">
+          <div class="col-lg-4 mb-4 photo_equip_cards centered-top">
+            <div class="equipment-photo-gallery" data-equipment-id="{% if self.smallname_equipment %}{{self.smallname_equipment}}{% else %}{{self.name_equipment|slugify}}{% endif %}">
+              <div class="main-photo-wrapper">
+                {% image value.pfoto_equipment original as main_img %}
+                <a href="#" class="equipment-photo-trigger" 
+                   data-toggle="modal" 
+                   data-target="#equipmentPhotoModal"
+                   data-main-image="{{ main_img.url }}"
+                   data-equipment-name="{{self.name_equipment}}">
+                  {% image value.pfoto_equipment width-500 class="img-fluid main-equipment-photo" %}
+                </a>
+              </div>
+              <div class="equipment-thumbnails">
+                {% image value.pfoto_equipment width-100 as thumb_main %}
+                <div class="equipment-thumb active" data-image-url="{{ main_img.url }}">
+                  {% image value.pfoto_equipment width-100 class="img-fluid" %}
+                </div>
+                {% if value.additional_photo_1 %}
+                  {% image value.additional_photo_1 original as add_img_1 %}
+                  {% image value.additional_photo_1 width-100 as thumb_1 %}
+                  <div class="equipment-thumb" data-image-url="{{ add_img_1.url }}">
+                    {% image value.additional_photo_1 width-100 class="img-fluid" %}
+                  </div>
+                {% endif %}
+                {% if value.additional_photo_2 %}
+                  {% image value.additional_photo_2 original as add_img_2 %}
+                  {% image value.additional_photo_2 width-100 as thumb_2 %}
+                  <div class="equipment-thumb" data-image-url="{{ add_img_2.url }}">
+                    {% image value.additional_photo_2 width-100 class="img-fluid" %}
+                  </div>
+                {% endif %}
+                {% if value.additional_photo_3 %}
+                  {% image value.additional_photo_3 original as add_img_3 %}
+                  {% image value.additional_photo_3 width-100 as thumb_3 %}
+                  <div class="equipment-thumb" data-image-url="{{ add_img_3.url }}">
+                    {% image value.additional_photo_3 width-100 class="img-fluid" %}
+                  </div>
+                {% endif %}
+                {% if value.additional_photo_4 %}
+                  {% image value.additional_photo_4 original as add_img_4 %}
+                  {% image value.additional_photo_4 width-100 as thumb_4 %}
+                  <div class="equipment-thumb" data-image-url="{{ add_img_4.url }}">
+                    {% image value.additional_photo_4 width-100 class="img-fluid" %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <h4 class="title text-center"><a href="{{ request.build_absolute_uri }}#{{self.smallname_equipment}}">{{self.name_equipment}}</a>
+              </h4>
+            <hr>
+            <h5 class='title text-center fw-weight-bolder'>{{self.description_equipment}}</h5>
+            <div class="overflow-auto text-left fst-italic" style="max-height: 380px;">
+            {{self.characteristic_equipment}}
+            </div> 
+          </div>
+          <div class="col-lg-4 mb-4 ">
+            {% comment %} Логика расчета цены со скидкой {% endcomment %}
+            {% get_equipment_price self as price_data %}
+            
+            <div class="equipment-price-container text-center">
+              {% if price_data.is_numeric and price_data.has_discount %}
+                <div class="price-sale-badge">SALE</div>
+                <div class="price-old">
+                  <span class="price-old-value">{{ price_data.original_price|floatformat:2 }} ₾</span>
+                </div>
+                <h3 class="price-new">{{ price_data.final_price|floatformat:2 }} ₾</h3>
+                {% if price_data.discount_source == 'item' %}
+                  <small class="price-discount-info">{% trans "Discount" %} {{ price_data.item_discount_percent|floatformat:0 }}%</small>
+                {% elif price_data.discount_source == 'global' %}
+                  <small class="price-discount-info">{% trans "Global discount" %} {{ price_data.global_discount|floatformat:0 }}%</small>
+                {% endif %}
+              {% elif price_data.is_numeric %}
+                <h3 class="text-center">{{ price_data.original_price|floatformat:2 }} ₾</h3>
+              {% else %}
+                {# Если цена не числовая, показываем как есть (для обратной совместимости) #}
+                <h3 class="text-center">{{ price_data.original_price }}</h3>
+              {% endif %}
+            </div>
+            
+            {% if  self.youtube_link %}
+            <div class="text-center"><a href="{{self.youtube_link}}">
+              <img src="{% static 'assets/img/klipartz.com.png' %}" alt="{{self.promou_equipment}}">
+                </a>
+            </div>
+            {% endif %}
+            
+            {% comment %} Кнопка заказать {% endcomment %}
+            <div class="text-center mt-3">
+              {% image value.pfoto_equipment width-200 as thumb_img %}
+              <button class="btn-order-equipment" 
+                      data-equipment-name="{{self.name_equipment}}"
+                      data-equipment-id="{% if self.smallname_equipment %}{{self.smallname_equipment}}{% else %}{{self.name_equipment|slugify}}{% endif %}"
+                      data-equipment-price="{% if price_data.is_numeric %}{{ price_data.final_price|floatformat:2 }}{% else %}{{ price_data.original_price }}{% endif %}"
+                      data-equipment-original-price="{% if price_data.is_numeric %}{{ price_data.original_price|floatformat:2 }}{% else %}{{ price_data.original_price }}{% endif %}"
+                      data-equipment-image="{{ thumb_img.url }}"
+                      data-equipment-quantity="{% if self.quantity_available %}{{ self.quantity_available }}{% else %}999{% endif %}"
+                      data-toggle="modal" 
+                      data-target="#quantityModal">
+                <i class="bi bi-cart-plus"></i>
+                <span>{% trans "Order" %}</span>
+              </button>
+            </div>
+            
+            <meta name="description" content="{{self.promou_equipment}}">
+         
+          </div>
+        </div>
+        <div>
+      </div>
+    </div>
+  </div>
+</div>   
+  
