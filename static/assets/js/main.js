@@ -605,6 +605,7 @@
       
       const submitBtn = this.querySelector('.auth-submit-btn');
       const formData = new FormData(this);
+      const t = window.TRANSLATIONS || {};
       
       // Удаляем предыдущие сообщения об ошибках
       const existingAlerts = this.querySelectorAll('.alert');
@@ -613,7 +614,7 @@
       // Показываем состояние загрузки
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Вход...</span><i class="bi bi-arrow-repeat spin"></i>';
+        submitBtn.innerHTML = `<span>${t.processing || 'Processing...'}</span><i class="bi bi-arrow-repeat spin"></i>`;
       }
       
       // Отправляем AJAX запрос
@@ -644,7 +645,7 @@
           errorAlert.className = 'alert alert-danger alert-dismissible fade show';
           errorAlert.setAttribute('role', 'alert');
           errorAlert.innerHTML = `
-            ${data.error || 'Произошла ошибка при входе'}
+            ${data.error || (t.connection_error || 'Login error occurred')}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -661,7 +662,7 @@
           // Восстанавливаем кнопку
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Войти</span><i class="bi bi-arrow-right"></i>';
+            submitBtn.innerHTML = `<span>${t.login || 'Login'}</span><i class="bi bi-arrow-right"></i>`;
           }
         }
       })
@@ -673,7 +674,7 @@
         errorAlert.className = 'alert alert-danger alert-dismissible fade show';
         errorAlert.setAttribute('role', 'alert');
         errorAlert.innerHTML = `
-          Произошла ошибка при подключении к серверу. Пожалуйста, попробуйте еще раз.
+          ${t.connection_error || 'Connection error. Please try again.'}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -689,7 +690,7 @@
         // Восстанавливаем кнопку
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>Войти</span><i class="bi bi-arrow-right"></i>';
+          submitBtn.innerHTML = `<span>${t.login || 'Login'}</span><i class="bi bi-arrow-right"></i>`;
         }
       });
     });
@@ -704,13 +705,154 @@
           alerts.forEach(alert => alert.remove());
           
           const submitBtn = loginForm.querySelector('.auth-submit-btn');
+          const t = window.TRANSLATIONS || {};
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Войти</span><i class="bi bi-arrow-right"></i>';
+            submitBtn.innerHTML = `<span>${t.login || 'Login'}</span><i class="bi bi-arrow-right"></i>`;
           }
         }
       });
     }
+  }
+  
+  // Handle Registration Form
+  const registerForm = select('#registerForm');
+  const contactTypeRadios = select('input[name="contact_type"]', true);
+  const phoneGroup = select('#phone-group');
+  const messengerGroup = select('#messenger-group');
+  const phoneInput = select('#register-phone');
+  const messengerInput = select('#register-messenger');
+  
+  // Toggle between phone and messenger fields
+  if (contactTypeRadios && contactTypeRadios.length > 0) {
+    contactTypeRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        if (this.value === 'phone') {
+          if (phoneGroup) phoneGroup.style.display = 'block';
+          if (messengerGroup) messengerGroup.style.display = 'none';
+          if (phoneInput) phoneInput.required = true;
+          if (messengerInput) messengerInput.required = false;
+          if (messengerInput) messengerInput.value = '';
+        } else if (this.value === 'messenger') {
+          if (phoneGroup) phoneGroup.style.display = 'none';
+          if (messengerGroup) messengerGroup.style.display = 'block';
+          if (phoneInput) phoneInput.required = false;
+          if (messengerInput) messengerInput.required = true;
+          if (phoneInput) phoneInput.value = '';
+        }
+      });
+    });
+    
+    // Initialize on page load
+    const checkedRadio = select('input[name="contact_type"]:checked');
+    if (checkedRadio && checkedRadio.value === 'messenger') {
+      if (phoneGroup) phoneGroup.style.display = 'none';
+      if (messengerGroup) messengerGroup.style.display = 'block';
+      if (phoneInput) phoneInput.required = false;
+      if (messengerInput) messengerInput.required = true;
+    }
+  }
+  
+  if (registerForm) {
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = this.querySelector('#registerSubmitBtn');
+      const errorDiv = select('#registerError');
+      const successDiv = select('#registerSuccess');
+      const formData = new FormData(this);
+      
+      // Hide previous messages
+      if (errorDiv) errorDiv.style.display = 'none';
+      if (successDiv) successDiv.style.display = 'none';
+      
+      const t = window.TRANSLATIONS || {};
+      
+      // Validate password match
+      const password = formData.get('password');
+      const passwordConfirm = formData.get('password_confirm');
+      if (password !== passwordConfirm) {
+        if (errorDiv) {
+          errorDiv.textContent = t.passwords_not_match || 'Passwords do not match';
+          errorDiv.style.display = 'block';
+        }
+        return;
+      }
+      
+      // Validate contact info
+      const contactType = formData.get('contact_type');
+      const phone = formData.get('phone');
+      const messengerLink = formData.get('messenger_link');
+      
+      if (contactType === 'phone' && !phone) {
+        if (errorDiv) {
+          errorDiv.textContent = t.phone_required || 'Phone number is required';
+          errorDiv.style.display = 'block';
+        }
+        return;
+      }
+      
+      if (contactType === 'messenger' && !messengerLink) {
+        if (errorDiv) {
+          errorDiv.textContent = t.messenger_required || 'Messenger link is required';
+          errorDiv.style.display = 'block';
+        }
+        return;
+      }
+      
+      // Show loading state
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>${t.processing || 'Processing...'}</span><i class="bi bi-arrow-repeat spin"></i>`;
+      }
+      
+      // Send AJAX request
+      fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          if (successDiv) {
+            successDiv.textContent = data.message || 'Регистрация успешна!';
+            successDiv.style.display = 'block';
+          }
+          
+          // Redirect after short delay
+          setTimeout(() => {
+            window.location.href = data.redirect || '/';
+          }, 1500);
+        } else {
+          if (errorDiv) {
+            errorDiv.textContent = data.error || 'Ошибка при регистрации';
+            errorDiv.style.display = 'block';
+          }
+          
+          const t = window.TRANSLATIONS || {};
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>${t.register || 'Register'}</span><i class="bi bi-person-plus"></i>`;
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Registration error:', error);
+        const t = window.TRANSLATIONS || {};
+        if (errorDiv) {
+          errorDiv.textContent = t.form_submit_error || 'Error submitting form. Please try again.';
+          errorDiv.style.display = 'block';
+        }
+        
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>${t.register || 'Register'}</span><i class="bi bi-person-plus"></i>`;
+        }
+      });
+    });
   }
   
   // Add spin animation for loading
@@ -929,7 +1071,7 @@
           cartItems.innerHTML = `
             <div class="cart-empty-message">
               <i class="bi bi-cart-x"></i>
-              <p>Корзина пуста</p>
+              <p>${(window.TRANSLATIONS && window.TRANSLATIONS.cart_empty) || 'Cart is empty'}</p>
             </div>
           `;
         } else {
@@ -944,11 +1086,11 @@
               <div class="cart-item-info">
                 <div class="cart-item-name">${item.name}</div>
                 <div class="cart-item-details">
-                  <span class="cart-item-quantity">Количество: ${item.quantity}</span>
+                  <span class="cart-item-quantity">${(window.TRANSLATIONS && window.TRANSLATIONS.quantity) || 'Quantity'}: ${item.quantity}</span>
                   <span class="cart-item-price">${item.price} ₾ × ${item.quantity} = ${itemTotal.toFixed(2)} ₾</span>
                 </div>
               </div>
-              <button class="cart-item-remove" data-item-id="${item.id}" aria-label="Удалить">
+              <button class="cart-item-remove" data-item-id="${item.id}" aria-label="${(window.TRANSLATIONS && window.TRANSLATIONS.remove) || 'Remove'}">
                 <i class="bi bi-x-circle"></i>
               </button>
             </div>
@@ -1123,9 +1265,9 @@
       const customerEmailEl = document.getElementById('customerEmail');
       const deliveryAddressEl = document.getElementById('deliveryAddress');
       const customerCommentEl = document.getElementById('customerComment');
+      const t = window.TRANSLATIONS || {};
       
       // Проверяем, что все элементы существуют
-      const t = window.TRANSLATIONS || {};
       if (!customerNameEl || !customerPhoneEl || !deliveryAddressEl) {
         console.error('Form elements not found');
         this.showCheckoutError(t.form_elements_not_found || 'Error: form elements not found. Please refresh the page.');
@@ -1260,14 +1402,17 @@
           }, 3000);
         } else {
           // Ошибка создания заказа
+          const t = window.TRANSLATIONS || {};
           this.showCheckoutError(data.error || (t.order_creation_error || 'Error creating order'));
         }
       } catch (error) {
         console.error('Error submitting order:', error);
+        const t = window.TRANSLATIONS || {};
         const errorMessage = error.message || (t.order_submit_error || 'Error submitting order. Please try again.');
         this.showCheckoutError(errorMessage);
       } finally {
         // Разблокируем кнопку
+        const t = window.TRANSLATIONS || {};
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.innerHTML = `<i class="bi bi-check-circle"></i> ${t.confirm_order || 'Confirm Order'}`;
@@ -1283,6 +1428,7 @@
         errorDiv.style.display = 'block';
         errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
+      // Скрываем сообщение об успехе, если оно было показано
       if (successDiv) {
         successDiv.style.display = 'none';
       }
@@ -1296,6 +1442,7 @@
         successDiv.style.display = 'block';
         successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
+      // Скрываем ошибки, если они были показаны
       if (errorDiv) {
         errorDiv.style.display = 'none';
       }
@@ -1503,9 +1650,11 @@
       quantityTotal.textContent = total.toFixed(2);
 
       // Проверка доступности
+      const t = window.TRANSLATIONS || {};
       if (quantity > maxQuantity) {
         if (quantityError) {
-          quantityError.textContent = `Доступно только ${maxQuantity} шт.`;
+          const availableMsg = t.only_available || 'Only %(quantity)s available';
+          quantityError.textContent = availableMsg.replace('%(quantity)s', maxQuantity);
           quantityError.style.display = 'block';
         }
         if (addToCartBtn) {

@@ -1,0 +1,205 @@
+{% extends "wagtailadmin/generic/index.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block header %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="bulk-actions-panel" style="margin: 15px 0; padding: 15px; background: #fff; border: 1px solid #e6e6e6; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <form method="post" action="{% url 'wagtail_delete_selected_orders' %}" id="bulk-actions-form-delete-selected" style="display: inline-block; margin-right: 10px;">
+            {% csrf_token %}
+            <div id="selected-orders-container"></div>
+            <button type="submit" class="button button-small button-secondary serious" id="delete-selected-btn" style="display: none;">
+                <svg class="icon icon-bin" aria-hidden="true" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"><use href="#icon-bin"></use></svg>
+                Удалить выбранные
+            </button>
+        </form>
+        <form method="post" action="{% url 'wagtail_delete_all_orders' %}" id="bulk-actions-form-delete-all" style="display: inline-block;">
+            {% csrf_token %}
+            <button type="submit" class="button button-small button-secondary serious" id="delete-all-btn" onclick="return confirm('Вы уверены, что хотите удалить ВСЕ заказы? Это действие нельзя отменить!');">
+                <svg class="icon icon-bin" aria-hidden="true" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"><use href="#icon-bin"></use></svg>
+                Удалить все
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        (function() {
+            function initBulkActions() {
+                console.log('Инициализация bulk actions...');
+                
+                const table = document.querySelector('table.listing, table[class*="table"], table');
+                if (!table) {
+                    console.log('Таблица не найдена, повторная попытка через 100ms...');
+                    setTimeout(initBulkActions, 100);
+                    return;
+                }
+                
+                console.log('Таблица найдена:', table);
+                
+                const rows = table.querySelectorAll('tbody tr');
+                const headerRow = table.querySelector('thead tr');
+                const bulkActionsForm = document.getElementById('bulk-actions-form');
+                const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+                const selectedContainer = document.getElementById('selected-orders-container');
+                
+                console.log('Найдено строк:', rows.length, 'Форма:', bulkActionsForm);
+                
+                if (rows.length === 0 || !bulkActionsForm) {
+                    console.warn('Нет строк или форма не найдена');
+                    return;
+                }
+                
+                // Функция для обновления скрытых полей с выбранными ID
+                function updateSelectedOrders() {
+                    if (!selectedContainer) return;
+                    
+                    // Очищаем контейнер
+                    selectedContainer.innerHTML = '';
+                    
+                    // Находим все выбранные чекбоксы
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="selected_orders"]:checked');
+                    
+                    console.log('Выбрано чекбоксов:', checkboxes.length);
+                    
+                    // Добавляем скрытые поля для каждого выбранного заказа
+                    checkboxes.forEach(function(checkbox) {
+                        if (checkbox.value) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'selected';
+                            input.value = checkbox.value;
+                            selectedContainer.appendChild(input);
+                        }
+                    });
+                    
+                    // Показываем/скрываем кнопку удаления
+                    if (deleteSelectedBtn) {
+                        if (checkboxes.length > 0) {
+                            deleteSelectedBtn.style.display = 'inline-block';
+                        } else {
+                            deleteSelectedBtn.style.display = 'none';
+                        }
+                    }
+                }
+                
+                // Добавляем заголовок чекбокса
+                if (headerRow && !headerRow.querySelector('th.checkbox-column')) {
+                    const checkboxHeader = document.createElement('th');
+                    checkboxHeader.className = 'checkbox-column';
+                    checkboxHeader.style.cssText = 'width: 40px; text-align: center; padding: 8px;';
+                    checkboxHeader.innerHTML = '<input type="checkbox" id="select-all-orders" title="Выбрать все" style="cursor: pointer;">';
+                    headerRow.insertBefore(checkboxHeader, headerRow.firstChild);
+                    
+                    // Обработчик "Выбрать все"
+                    const selectAllCheckbox = document.getElementById('select-all-orders');
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.addEventListener('change', function() {
+                            const rowCheckboxes = table.querySelectorAll('tbody tr input[type="checkbox"][name="selected_orders"]');
+                            rowCheckboxes.forEach(function(cb) {
+                                cb.checked = selectAllCheckbox.checked;
+                            });
+                            updateSelectedOrders();
+                        });
+                    }
+                }
+                
+                // Добавляем чекбоксы к каждой строке
+                rows.forEach(function(row, index) {
+                    if (!row.querySelector('td.checkbox-column')) {
+                        const checkboxCell = document.createElement('td');
+                        checkboxCell.className = 'checkbox-column';
+                        checkboxCell.style.cssText = 'width: 40px; text-align: center; padding: 8px;';
+                        
+                        let orderId = null;
+                        
+                        // Пробуем получить ID из различных источников
+                        const orderLink = row.querySelector('a[href*="/admin/order/"]');
+                        if (orderLink) {
+                            const href = orderLink.getAttribute('href');
+                            const match = href.match(/\/admin\/order\/(\d+)/);
+                            if (match) {
+                                orderId = match[1];
+                            }
+                        }
+                        
+                        if (!orderId) {
+                            orderId = row.getAttribute('data-object-pk') || 
+                                     row.getAttribute('data-id') ||
+                                     row.getAttribute('data-order-id');
+                        }
+                        
+                        if (!orderId && row.id) {
+                            const idMatch = row.id.match(/(\d+)/);
+                            if (idMatch) {
+                                orderId = idMatch[1];
+                            }
+                        }
+                        
+                        // Если все еще не нашли, пробуем из всех ссылок
+                        if (!orderId) {
+                            const allLinks = row.querySelectorAll('a[href]');
+                            for (let link of allLinks) {
+                                const href = link.getAttribute('href');
+                                const match = href.match(/\/(\d+)\//) || href.match(/\/(\d+)$/);
+                                if (match) {
+                                    orderId = match[1];
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (orderId) {
+                            row.setAttribute('data-order-id', orderId);
+                            
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.name = 'selected_orders';
+                            checkbox.value = orderId;
+                            checkbox.id = 'selected_order_' + orderId;
+                            checkbox.style.cssText = 'cursor: pointer;';
+                            checkbox.addEventListener('change', updateSelectedOrders);
+                            checkboxCell.appendChild(checkbox);
+                            row.insertBefore(checkboxCell, row.firstChild);
+                            console.log(`Добавлен чекбокс для заказа ID: ${orderId}`);
+                        } else {
+                            console.warn(`Не удалось найти ID заказа для строки ${index}:`, row);
+                        }
+                    }
+                });
+                
+                // Обработчик отправки формы для удаления выбранных
+                const deleteSelectedForm = document.getElementById('bulk-actions-form-delete-selected');
+                if (deleteSelectedForm) {
+                    deleteSelectedForm.addEventListener('submit', function(e) {
+                        const checkboxes = document.querySelectorAll('input[type="checkbox"][name="selected_orders"]:checked');
+                        if (checkboxes.length === 0) {
+                            e.preventDefault();
+                            alert('Пожалуйста, выберите хотя бы один заказ для удаления');
+                            return false;
+                        }
+                        if (!confirm(`Вы уверены, что хотите удалить ${checkboxes.length} заказ(ов)?`)) {
+                            e.preventDefault();
+                            return false;
+                        }
+                        updateSelectedOrders();
+                    });
+                }
+                
+                updateSelectedOrders();
+                console.log('Bulk actions инициализированы');
+            }
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initBulkActions);
+            } else {
+                initBulkActions();
+            }
+        })();
+    </script>
+{% endblock %}
