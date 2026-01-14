@@ -13,9 +13,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 class HomePage(Page):
+    """
+    Главная страница сайта.
+    Содержит настройки слайдера и карточки меню.
+    """
     subpage_types = ['equipment_list.EquipmentList']
     parent_page_types = []
-    # поля в базе данных
 
     banner_slider_settings = StreamField(
         [('banner_slider', blocks.BannerSliderBlock())],
@@ -31,7 +34,7 @@ class HomePage(Page):
                               use_json_field=True,
                               verbose_name=_("Карточка меню"))
 
-    promote_keywords = models.TextField(verbose_name=_("Ключевые слова"), blank=True,)
+    promote_keywords = models.TextField(verbose_name=_("Ключевые слова"), blank=True, default='')
 
 # поля для ввода данных в интерфейсе администраторa
     content_panels = Page.content_panels + [
@@ -44,85 +47,158 @@ class HomePage(Page):
     ]
 
 @register_snippet
-class Footer_snipet_contact(TranslatableMixin, models.Model):
-    url_contact_data = models.URLField(null=True, blank=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
-    phone = models.CharField(max_length=255, null=True, blank=True)
-    discription = models.CharField(max_length=255, null=True, blank=True)
+class FooterSnippetContact(TranslatableMixin, models.Model):
+    """
+    Модель для хранения контактных данных в футере сайта.
+    Поддерживает переводы через TranslatableMixin.
+    """
+    url_contact_data = models.URLField(
+        null=True, 
+        blank=True,
+        verbose_name=_('URL контактных данных')
+    )
+    name = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Название')
+    )
+    phone = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Телефон')
+    )
+    description = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Описание')
+    )
 
     panels = [
         FieldPanel('name'),
         FieldPanel('url_contact_data'),
         FieldPanel('phone'),
-        FieldPanel('discription'),
+        FieldPanel('description'),
     ]
 
     def __str__(self):
-        return str(self.name)
+        return str(self.name) if self.name else _('Контактные данные')
 
     class Meta(TranslatableMixin.Meta):
-        verbose_name = 'контактные данные в фУтере'
-        verbose_name_plural = 'контактные данные'
+        verbose_name = _('Контактные данные в футере')
+        verbose_name_plural = _('Контактные данные')
 
 
 @register_snippet
 class UrlFooter(models.Model):
-    url_posicion = models.URLField(null=True, blank=True)
-    text_link = models.CharField(max_length=255, null=True, blank=True)
-    promo_discript = models.CharField(max_length=255, null=True, blank=True)
+    """
+    Модель для хранения полезных ссылок в футере сайта.
+    """
+    url_position = models.URLField(
+        null=True, 
+        blank=True,
+        verbose_name=_('URL ссылки')
+    )
+    text_link = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Текст ссылки')
+    )
+    promo_description = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Описание')
+    )
 
     panels = [
-        FieldPanel('url_posicion'),
+        FieldPanel('url_position'),
         FieldPanel('text_link'),
-        FieldPanel('promo_discript'),
+        FieldPanel('promo_description'),
     ]
 
     def __str__(self):
-        return str(self.text_link)
+        return str(self.text_link) if self.text_link else _('Полезная ссылка')
 
-    class Meta():
-        verbose_name = 'полезная ссылка в футере'
-        verbose_name_plural = 'полезные ссылки'
+    class Meta:
+        verbose_name = _('Полезная ссылка в футере')
+        verbose_name_plural = _('Полезные ссылки')
 
 
 @register_snippet
-class PortnerUrlFuter(models.Model):
-    url_potner_page = models.URLField(null=True, blank=True)
-    text_link_portner = models.CharField(max_length=255, null=True, blank=True)
-    promo_discript_portner = models.CharField(max_length=255, null=True, blank=True)
+class PartnerUrlFooter(models.Model):
+    """
+    Модель для хранения ссылок на партнеров в футере сайта.
+    """
+    url_partner_page = models.URLField(
+        null=True, 
+        blank=True,
+        verbose_name=_('URL страницы партнера')
+    )
+    text_link_partner = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Текст ссылки партнера')
+    )
+    promo_description_partner = models.CharField(
+        max_length=255, 
+        null=True, 
+        blank=True,
+        verbose_name=_('Описание партнера')
+    )
 
     panels = [
-        FieldPanel('url_potner_page'),
-        FieldPanel('text_link_portner'),
-        FieldPanel('promo_discript_portner'),
+        FieldPanel('url_partner_page'),
+        FieldPanel('text_link_partner'),
+        FieldPanel('promo_description_partner'),
     ]
 
     def __str__(self):
-        return str(self.text_link_portner)
+        return str(self.text_link_partner) if self.text_link_partner else _('Партнер')
 
-    class Meta():
-        verbose_name = 'потнера в футере'
-        verbose_name_plural = 'Портнеры'
+    class Meta:
+        verbose_name = _('Партнер в футере')
+        verbose_name_plural = _('Партнеры')
 
 
 @register_snippet
-class Footer_snipet_carusel(models.Model):
-    link_band = models.URLField(null=True, blank=True, help_text='ссылка на группу')
-    pfoto_in_carusel = models.ImageField(upload_to='carusel/')
-    interval = models.IntegerField(null=True, blank=True, help_text='интервал переключения')
+class FooterSnippetCarousel(models.Model):
+    """
+    Модель для хранения контента карусели в футере сайта.
+    """
+    link_band = models.URLField(
+        null=True, 
+        blank=True, 
+        verbose_name=_('Ссылка на группу'),
+        help_text=_('Ссылка на группу или страницу')
+    )
+    photo_in_carousel = models.ImageField(
+        upload_to='carousel/',
+        verbose_name=_('Фото в карусели')
+    )
+    interval = models.IntegerField(
+        null=True, 
+        blank=True, 
+        verbose_name=_('Интервал переключения'),
+        help_text=_('Интервал переключения слайдов в миллисекундах')
+    )
 
     panels = [
         FieldPanel('link_band'),
-        FieldPanel('pfoto_in_carusel'),
+        FieldPanel('photo_in_carousel'),
         FieldPanel('interval'),
     ]
 
     def __str__(self):
-        return str(self.link_band)
+        return str(self.link_band) if self.link_band else _('Элемент карусели')
 
-    class Meta():
-        verbose_name = 'контент карусели в футере'
-        verbose_name_plural = 'данные карусели'
+    class Meta:
+        verbose_name = _('Контент карусели в футере')
+        verbose_name_plural = _('Данные карусели')
 
 
 # Модель для глобальных настроек скидок на оборудование
@@ -284,6 +360,20 @@ class Order(models.Model):
         null=True
     )
     
+    # Дата и время монтажа
+    installation_date = models.DateField(
+        verbose_name=_('Дата монтажа'),
+        help_text=_('Дата, на которую запланирован монтаж'),
+        null=True,
+        blank=True
+    )
+    installation_time = models.TimeField(
+        verbose_name=_('Время начала монтажа'),
+        help_text=_('Время начала монтажа'),
+        null=True,
+        blank=True
+    )
+    
     # Статус и стоимость
     status = models.CharField(
         verbose_name=_('Статус заказа'),
@@ -306,10 +396,19 @@ class Order(models.Model):
             models.Index(fields=['-created_at']),
             models.Index(fields=['order_number']),
             models.Index(fields=['status']),
+            models.Index(fields=['installation_date']),
         ]
     
     def __str__(self):
-        return f"Заказ #{self.order_number} от {self.created_at.strftime('%d.%m.%Y %H:%M')}"
+        installation_info = ''
+        if self.installation_date:
+            date_str = self.installation_date.strftime('%d.%m.%Y')
+            time_str = self.installation_time.strftime('%H:%M') if self.installation_time else ''
+            if time_str:
+                installation_info = f' (монтаж: {date_str} {time_str})'
+            else:
+                installation_info = f' (монтаж: {date_str})'
+        return f"Заказ #{self.order_number} от {self.created_at.strftime('%d.%m.%Y %H:%M')}{installation_info}"
     
     def get_total_price(self):
         """Вычисляет общую сумму заказа из позиций"""

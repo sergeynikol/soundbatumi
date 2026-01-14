@@ -6,7 +6,7 @@
       <div class="icon-list" >
       <div class="form-group form-control">
         <div class="row">
-          <div class="col-lg-4 mb-4 photo_equip_cards centered-top">
+          <div class="col-lg-4 col-md-6 col-12 mb-4 photo_equip_cards centered-top">
             <div class="equipment-photo-gallery" data-equipment-id="{% if self.smallname_equipment %}{{self.smallname_equipment}}{% else %}{{self.name_equipment|slugify}}{% endif %}">
               <div class="main-photo-wrapper">
                 {% image value.pfoto_equipment original as main_img %}
@@ -14,7 +14,7 @@
                    data-toggle="modal" 
                    data-target="#equipmentPhotoModal"
                    data-main-image="{{ main_img.url }}"
-                   data-equipment-name="{{self.name_equipment}}">
+                   data-equipment-name="{{self.description_equipment|striptags|truncatewords:20}}">
                   {% image value.pfoto_equipment width-500 class="img-fluid main-equipment-photo" %}
                 </a>
               </div>
@@ -54,16 +54,16 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-4 mb-4">
+          <div class="col-lg-4 col-md-6 col-12 mb-4">
             <h4 class="title text-center"><a href="{{ request.build_absolute_uri }}#{{self.smallname_equipment}}">{{self.name_equipment}}</a>
               </h4>
             <hr>
             <h5 class='title text-center fw-weight-bolder'>{{self.description_equipment}}</h5>
-            <div class="overflow-auto text-left fst-italic" style="max-height: 380px;">
+            <div class="overflow-auto text-left fst-italic equipment-characteristics" style="max-height: 380px;">
             {{self.characteristic_equipment}}
             </div> 
           </div>
-          <div class="col-lg-4 mb-4 ">
+          <div class="col-lg-4 col-md-12 col-12 mb-4">
             {% comment %} Логика расчета цены со скидкой {% endcomment %}
             {% get_equipment_price self as price_data %}
             
@@ -98,7 +98,7 @@
             <div class="text-center mt-3">
               {% image value.pfoto_equipment width-200 as thumb_img %}
               <button class="btn-order-equipment" 
-                      data-equipment-name="{{self.name_equipment}}"
+                      data-equipment-name="{{self.description_equipment|striptags|truncatewords:20}}"
                       data-equipment-id="{% if self.smallname_equipment %}{{self.smallname_equipment}}{% else %}{{self.name_equipment|slugify}}{% endif %}"
                       data-equipment-price="{% if price_data.is_numeric %}{{ price_data.final_price|floatformat:2 }}{% else %}{{ price_data.original_price }}{% endif %}"
                       data-equipment-original-price="{% if price_data.is_numeric %}{{ price_data.original_price|floatformat:2 }}{% else %}{{ price_data.original_price }}{% endif %}"

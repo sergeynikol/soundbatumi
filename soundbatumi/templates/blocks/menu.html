@@ -8,7 +8,7 @@
                 
              </li> 
              <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class='set-icon' src="{% static 'assets/img/icons/free-icon-foreign-language-5332986.png' %}" id="navbarDropdown" alt="settings">
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -64,7 +64,7 @@
             <li class="nav-item auth-buttons-container">
               {% if user.is_authenticated %}
                 <div class="nav-link dropdown auth-btn-user">
-                  <a class="dropdown-toggle auth-btn-trigger auth-btn-user-link" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a class="dropdown-toggle auth-btn-trigger auth-btn-user-link" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bi bi-person-circle"></i> <span class="auth-btn-text">{{ user.username }}</span>
                   </a>
                   <div class="dropdown-menu" aria-labelledby="userDropdown">
@@ -82,14 +82,14 @@
                   </a>
                 {% endif %}
               {% else %}
-                <button class="nav-link auth-btn-trigger" data-toggle="modal" data-target="#authModal">
+                <button class="nav-link auth-btn-trigger" data-bs-toggle="modal" data-bs-target="#authModal">
                   <i class="bi bi-box-arrow-in-right"></i> <span class="auth-btn-text">{% trans "Login" %}</span>
                 </button>
               {% endif %}
             </li>
             {% comment %} Кнопка корзины {% endcomment %}
             <li class="nav-item cart-button-container">
-              <a href="#" class="nav-link cart-btn" id="cartButton" role="button" data-toggle="modal" data-target="#cartModal">
+              <a href="#" class="nav-link cart-btn" id="cartButton" role="button" data-bs-toggle="modal" data-bs-target="#cartModal">
                 <i class="bi bi-cart3"></i>
                 <span class="cart-count-badge" id="cartCount">0</span>
               </a>

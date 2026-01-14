@@ -8,11 +8,12 @@ from django.db import OperationalError, ProgrammingError
 from django.utils import timezone
 from datetime import timedelta
 
-# Импортируем ViewSet для заказов
+# Импортируем ViewSet для заказов и пользователей
 try:
-    from .wagtail_admin import order_viewset
+    from .wagtail_admin import order_viewset, user_viewset
 except (ImportError, Exception):
     order_viewset = None
+    user_viewset = None
 
 
 @hooks.register('construct_snippet_listing_queryset')
@@ -182,6 +183,13 @@ def register_order_viewset():
         return order_viewset
 
 
+@hooks.register("register_admin_viewset")
+def register_user_viewset():
+    """Регистрируем ViewSet для пользователей"""
+    if user_viewset is not None:
+        return user_viewset
+
+
 @hooks.register("register_admin_menu_item")
 def register_orders_menu_item():
     """Добавляем кнопку заказов в меню админ-панели"""
@@ -195,3 +203,14 @@ def register_orders_menu_item():
     )
 
 
+@hooks.register("register_admin_menu_item")
+def register_users_menu_item():
+    """Добавляем кнопку пользователей в меню админ-панели"""
+    from wagtail.admin.menu import MenuItem
+    
+    return MenuItem(
+        'Пользователи',
+        '/admin/user/',
+        icon_name='user',
+        order=100
+    )

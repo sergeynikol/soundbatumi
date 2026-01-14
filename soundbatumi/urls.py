@@ -9,6 +9,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 from search import views as search_views
 from home import views as home_views
+from home import wagtail_views
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -19,6 +20,29 @@ urlpatterns = [
     path("register/", home_views.user_register, name="register"),
     path("logout/", home_views.user_logout, name="logout"),
     path("api/create-order/", home_views.create_order, name="create_order"),
+    path(
+        "api/telegram-login/",
+        home_views.telegram_login,
+        name="telegram_login"
+    ),
+    path(
+        "api/telegram-callback/",
+        home_views.telegram_callback,
+        name="telegram_callback"
+    ),
+    # Bulk actions для заказов в Wagtail админ-панели
+    path(
+        "admin/order/delete-selected/",
+        wagtail_views.delete_selected_orders,
+        name="wagtail_delete_selected_orders"
+    ),
+    path(
+        "admin/order/delete-all/",
+        wagtail_views.delete_all_orders,
+        name="wagtail_delete_all_orders"
+    ),
+    # allauth URLs
+    path("accounts/", include("allauth.urls")),
 ]
 
 

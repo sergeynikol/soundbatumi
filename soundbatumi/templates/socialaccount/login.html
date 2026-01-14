@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<section id="hero" class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="icon-box" style="background: rgba(255, 255, 255, 0.9); padding: 40px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+          <h2 class="text-center mb-4" style="color: #124265;">{% trans "Sign In" %}</h2>
+          
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              {% trans "Please correct the errors below." %}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endif %}
+
+          {% if process == "connect" %}
+            <div class="alert alert-info">
+              <h4>{% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}</h4>
+              <p>{% blocktrans with provider.name as provider %}You are about to connect a new third party account from {{ provider }}.{% endblocktrans %}</p>
+            </div>
+          {% else %}
+            <div class="alert alert-info">
+              <h4>{% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}</h4>
+              <p>{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}</p>
+            </div>
+          {% endif %}
+
+          <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            
+            <div class="d-grid mt-4">
+              <button type="submit" class="auth-submit-btn">
+                <span>{% trans "Continue" %}</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center mt-4">
+            <a href="/" style="color: #2487ce; text-decoration: none;">
+              <i class="bi bi-arrow-left"></i> {% trans "Back to Home" %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

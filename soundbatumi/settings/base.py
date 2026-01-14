@@ -42,6 +42,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    
+    # allauth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 MIDDLEWARE = [
@@ -52,12 +59,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-    "home.middleware.VisitCounterMiddleware",  # Middleware для подсчета посещений
-    "home.error_middleware.DatabaseErrorMiddleware",  # Middleware для обработки ошибок БД
-    "home.admin_access_middleware.AdminAccessMiddleware",  # Middleware для ограничения доступа к админ-панели
+    "allauth.account.middleware.AccountMiddleware",
+    "home.middleware.VisitCounterMiddleware",
+    "home.error_middleware.DatabaseErrorMiddleware",
+    "home.admin_access_middleware.AdminAccessMiddleware",
 ]
 
 ROOT_URLCONF = "soundbatumi.urls"
@@ -89,11 +96,11 @@ WSGI_APPLICATION = "soundbatumi.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sb2',
-        'USER': 'usersb',
-        'PASSWORD': '7899874qazwsxedc',
-        'HOST':  'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'sb2'),
+        'USER': os.getenv('DB_USER', 'usersb'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -157,7 +164,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 LOCALE_PATHS = (
-	os.path.join(BASE_DIR, "locale"),
+    os.path.join(BASE_DIR, "locale"),
 )
 
 # Wagtail settings
@@ -178,15 +185,20 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 
 WAGTAIL_ENABLE_UPDATE_CHECK = False
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.soundbatumi.com',
+    'https://*.145.239.85.113'
+]
 
-CSRF_TRUSTED_ORIGINS = ['https://*.soundbatumi.com','https://*.145.239.85.113']
-
-WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = (
+# Языки для Wagtail
+WAGTAIL_CONTENT_LANGUAGES = (
     ('en', _('English')),
     ('ka', _('Georgian')),
     ('ru', _('Russian')),
 )
+
+# Языки для Django локализации
+LANGUAGES = WAGTAIL_CONTENT_LANGUAGES
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -194,3 +206,51 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Django allauth settings
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Allauth settings
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+# Google OAuth settings (должны быть установлены через переменные окружения)
+# GOOGLE_OAUTH2_CLIENT_ID и GOOGLE_OAUTH2_SECRET_KEY
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
+
+# Telegram Bot settings (для Telegram Login Widget и бота для заказов)
+TELEGRAM_BOT_NAME = os.getenv("TELEGRAM_BOT_NAME", "")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_ADMIN_IDS = os.getenv(
+    "TELEGRAM_ADMIN_IDS", ""
+)
+
+# ID группы Telegram для отправки уведомлений о заказах
+# Может быть числом (например: -1001234567890) или username группы (например: @mygroup)
+# Если не указан, используется TELEGRAM_ADMIN_IDS (отправка в личные чаты)
+TELEGRAM_GROUP_ID = os.getenv(
+    "TELEGRAM_GROUP_ID", ""
+)  # ID администраторов через запятую

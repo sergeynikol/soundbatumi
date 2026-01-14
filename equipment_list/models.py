@@ -14,7 +14,7 @@ class EquipmentList(Page):
     diskription_equipment = StreamField([
         ('title_equipments', blocks.DescriptionEquipments())
     ], blank=True, use_json_field=True,)
-    promote_keywords = models.TextField(verbose_name="promote_keywords", blank=True,)
+    promote_keywords = models.TextField(verbose_name="promote_keywords", blank=True, default='')
 # поля для ввода данных в интерфейсе администраторa
     content_panels = Page.content_panels + [
         FieldPanel('diskription_equipment'),

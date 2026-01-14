@@ -36,3 +36,6 @@ wagtail==5.2.1
 wagtail-localize==1.7
 webencodings==0.5.1
 Willow==1.6.2
+django-allauth==0.57.0
+aiogram==3.13.1
+aiofiles==24.1.0

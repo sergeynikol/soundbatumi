@@ -1,11 +1,13 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 from django.utils.html import format_html, escape
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils import timezone
 from django.contrib import messages
 from datetime import timedelta
-from .models import Order, OrderItem
+from .models import Order, OrderItem, UserProfile
 
 
 class ObsoleteOrdersFilter(admin.SimpleListFilter):
@@ -60,12 +62,13 @@ class OrderAdmin(admin.ModelAdmin):
         'customer_name',
         'customer_phone',
         'delivery_address_short',
+        'installation_datetime_display',
         'equipment_list_display',
         'status',
         'total_amount_display',
         'items_count'
     )
-    list_filter = ('status', 'created_at', ObsoleteOrdersFilter)
+    list_filter = ('status', 'created_at', 'installation_date', ObsoleteOrdersFilter)
     search_fields = ('order_number', 'customer_name', 'customer_phone', 'customer_email')
     readonly_fields = (
         'order_number',
@@ -81,8 +84,8 @@ class OrderAdmin(admin.ModelAdmin):
         ('Контактные данные', {
             'fields': ('contact_info', 'customer_name', 'customer_phone', 'customer_email', 'customer_comment')
         }),
-        ('Доставка', {
-            'fields': ('delivery_address',)
+        ('Доставка и монтаж', {
+            'fields': ('delivery_address', 'installation_date', 'installation_time')
         }),
         ('Состав заказа', {
             'fields': ('items_list', 'total_amount')
@@ -118,6 +121,17 @@ class OrderAdmin(admin.ModelAdmin):
         """Количество позиций в заказе"""
         return obj.items.count()
     items_count.short_description = 'Позиций'
+    
+    def installation_datetime_display(self, obj):
+        """Отображение даты и времени монтажа"""
+        if obj.installation_date:
+            date_str = obj.installation_date.strftime('%d.%m.%Y')
+            if obj.installation_time:
+                time_str = obj.installation_time.strftime('%H:%M')
+                return f"{date_str} {time_str}"
+            return date_str
+        return format_html('<span style="color: #999;">-</span>')
+    installation_datetime_display.short_description = 'Дата/время монтажа'
     
     def equipment_list_display(self, obj):
         """Отображение списка заказанного оборудования в таблице"""
@@ -176,7 +190,15 @@ class OrderAdmin(admin.ModelAdmin):
         if obj.customer_email:
             info += f'<strong>Email:</strong> {escape(obj.customer_email)}<br>'
         if obj.customer_comment:
-            info += f'<strong>Комментарий:</strong> {escape(obj.customer_comment)}'
+            info += f'<strong>Комментарий:</strong> {escape(obj.customer_comment)}<br>'
+        # Добавляем информацию о дате и времени монтажа
+        if obj.installation_date:
+            date_str = obj.installation_date.strftime('%d.%m.%Y')
+            time_str = obj.installation_time.strftime('%H:%M') if obj.installation_time else ''
+            if time_str:
+                info += f'<strong>Дата/время монтажа:</strong> {date_str} {time_str}'
+            else:
+                info += f'<strong>Дата монтажа:</strong> {date_str}'
         return mark_safe(info)
     contact_info.short_description = 'Контактные данные'
     
@@ -292,3 +314,36 @@ class OrderAdmin(admin.ModelAdmin):
                 f'{cancelled_count} отмененных (старше 3 мес.)'
             )
     delete_all_obsolete_orders.short_description = '🗑️ Удалить ВСЕ неактуальные заказы из базы (старые завершенные и отмененные)'
+
+
+class UserProfileInline(admin.StackedInline):
+    """Инлайн для отображения профиля пользователя в админке User"""
+    model = UserProfile
+    can_delete = False
+    verbose_name_plural = 'Профиль'
+    fields = ('name_or_organization', 'phone', 'messenger_link', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+
+
+class CustomUserAdmin(BaseUserAdmin):
+    """Расширенная админ-панель для управления пользователями"""
+    inlines = (UserProfileInline,)
+
+
+# Регистрируем CustomUserAdmin вместо стандартного UserAdmin
+# Отменяем регистрацию только если User уже зарегистрирован
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
+admin.site.register(User, CustomUserAdmin)
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    """Админ-панель для управления профилями пользователей"""
+    list_display = ('user', 'name_or_organization', 'phone', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username', 'user__email', 'name_or_organization', 'phone')
+    readonly_fields = ('created_at', 'updated_at')
+    fields = ('user', 'name_or_organization', 'phone', 'messenger_link', 'created_at', 'updated_at')

@@ -1,4 +1,5 @@
-{% load static wagtailcore_tags i18n %}
+{% load static wagtailcore_tags i18n settings_tags %}
+{% get_setting 'TELEGRAM_BOT_NAME' as telegram_bot_name %}
 
 <!-- Auth Modal -->
 <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
@@ -7,32 +8,28 @@
       <div class="modal-header auth-modal-header">
         <ul class="nav nav-tabs auth-tabs" id="authTabs" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="login-tab" data-toggle="tab" data-target="#login-pane" type="button" role="tab" aria-controls="login-pane" aria-selected="true">
+            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab" aria-controls="login-pane" aria-selected="true">
               <i class="bi bi-box-arrow-in-right"></i> {% trans "Login" %}
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="register-tab" data-toggle="tab" data-target="#register-pane" type="button" role="tab" aria-controls="register-pane" aria-selected="false">
+            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-pane" type="button" role="tab" aria-controls="register-pane" aria-selected="false">
               <i class="bi bi-person-plus"></i> {% trans "Registration" %}
             </button>
           </li>
         </ul>
-        <button type="button" class="close auth-close-btn" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close auth-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body auth-modal-body">
         <div class="tab-content" id="authTabContent">
           <!-- Login Tab -->
-          <div class="tab-pane fade show active" id="login-pane" role="tabpanel" aria-labelledby="login-tab" data-target="#login-pane">
+          <div class="tab-pane fade show active" id="login-pane" role="tabpanel" aria-labelledby="login-tab">
             {% if messages %}
               {% for message in messages %}
                 {% if message.tags == 'error' %}
                   <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>
                 {% endif %}
               {% endfor %}
@@ -63,6 +60,47 @@
                 </button>
               </div>
             </form>
+            
+            <!-- Social Login Divider -->
+            <div class="social-login-divider">
+              <span>{% trans "or" %}</span>
+            </div>
+            
+            <!-- Social Login Buttons -->
+            <div class="social-login-buttons">
+              <a href="/accounts/google/login/" class="social-login-btn google-btn">
+                <div class="social-btn-icon">
+                  <svg width="20" height="20" viewBox="0 0 18 18">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                    <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.348 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
+                  </svg>
+                </div>
+                <span class="social-btn-text">{% trans "Continue with Google" %}</span>
+                <i class="bi bi-arrow-right social-btn-arrow"></i>
+              </a>
+              
+              {% if telegram_bot_name %}
+              <div id="telegram-login-container" class="telegram-widget-wrapper">
+                <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                        data-telegram-login="{{ telegram_bot_name }}" 
+                        data-size="large" 
+                        data-onauth="onTelegramAuth(user)" 
+                        data-request-access="write"></script>
+              </div>
+              {% else %}
+              <div class="social-login-btn telegram-btn telegram-disabled" title="{% trans 'Telegram login is not configured' %}">
+                <div class="social-btn-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.87 8.81c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.333-.373-.12l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                  </svg>
+                </div>
+                <span class="social-btn-text">{% trans "Continue with Telegram" %}</span>
+                <i class="bi bi-arrow-right social-btn-arrow"></i>
+              </div>
+              {% endif %}
+            </div>
           </div>
           
           <!-- Register Tab -->
@@ -142,9 +180,87 @@
                 </button>
               </div>
             </form>
+            
+            <!-- Social Login Divider -->
+            <div class="social-login-divider">
+              <span>{% trans "or" %}</span>
+            </div>
+            
+            <!-- Social Login Buttons -->
+            <div class="social-login-buttons">
+              <a href="/accounts/google/login/" class="social-login-btn google-btn">
+                <div class="social-btn-icon">
+                  <svg width="20" height="20" viewBox="0 0 18 18">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                    <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.348 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
+                  </svg>
+                </div>
+                <span class="social-btn-text">{% trans "Continue with Google" %}</span>
+                <i class="bi bi-arrow-right social-btn-arrow"></i>
+              </a>
+              
+              {% if telegram_bot_name %}
+              <div id="telegram-login-container-register" class="telegram-widget-wrapper">
+                <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                        data-telegram-login="{{ telegram_bot_name }}" 
+                        data-size="large" 
+                        data-onauth="onTelegramAuth(user)" 
+                        data-request-access="write"></script>
+              </div>
+              {% else %}
+              <div class="social-login-btn telegram-btn telegram-disabled" title="{% trans 'Telegram login is not configured' %}">
+                <div class="social-btn-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.87 8.81c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.333-.373-.12l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                  </svg>
+                </div>
+                <span class="social-btn-text">{% trans "Continue with Telegram" %}</span>
+                <i class="bi bi-arrow-right social-btn-arrow"></i>
+              </div>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+// Telegram Login Widget callback
+function onTelegramAuth(user) {
+    // Отправляем данные на сервер
+    fetch('{% url "telegram_login" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Закрываем модальное окно
+            if (typeof $ !== 'undefined' && $('#authModal').length) {
+                $('#authModal').modal('hide');
+            }
+            // Перенаправляем или обновляем страницу
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            } else {
+                window.location.reload();
+            }
+        } else {
+            alert(data.error || '{% trans "Error authenticating with Telegram" %}');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{% trans "Error authenticating with Telegram" %}');
+    });
+}
+</script>

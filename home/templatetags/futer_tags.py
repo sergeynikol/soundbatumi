@@ -1,19 +1,29 @@
+"""
+Template tags для работы с футером сайта.
+"""
 from django import template
-from home.models import Footer_snipet_contact, Footer_snipet_carusel
+from home.models import FooterSnippetContact, FooterSnippetCarousel
 
 register = template.Library()
 
 
 @register.inclusion_tag('blocks/contacts.html', takes_context=True)
 def contakts(context):
+    """
+    Возвращает список контактных данных для футера.
+    """
     return {
-        'contakts': Footer_snipet_contact.objects.all(),
+        'contakts': FooterSnippetContact.objects.all(),
         'request': context['request'],
     }
 
+
 @register.inclusion_tag('blocks/carusel.html', takes_context=True)
 def carusel(context):
+    """
+    Возвращает список элементов карусели для футера.
+    """
     return {
-        'carusel': Footer_snipet_carusel.objects.all(),
+        'carusel': FooterSnippetCarousel.objects.all(),
         'request': context['request'],
     }
