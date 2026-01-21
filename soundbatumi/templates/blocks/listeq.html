@@ -69,7 +69,7 @@
             
             <div class="equipment-price-container text-center">
               {% if price_data.is_numeric and price_data.has_discount %}
-                <div class="price-sale-badge">SALE</div>
+                <div class="price-sale-badge">{% trans "SALE" %}</div>
                 <div class="price-old">
                   <span class="price-old-value">{{ price_data.original_price|floatformat:2 }} ₾</span>
                 </div>

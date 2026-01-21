@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 <!-- Equipment Photo Modal -->
 <div class="modal fade" id="equipmentPhotoModal" tabindex="-1" role="dialog" aria-labelledby="equipmentPhotoModalLabel" aria-hidden="true">
@@ -6,7 +6,7 @@
     <div class="modal-content equipment-photo-modal-content">
       <div class="modal-header equipment-photo-modal-header">
         <h5 class="modal-title" id="equipmentPhotoModalLabel">
-          <i class="bi bi-image"></i> <span id="equipmentPhotoTitle">Фото товара</span>
+          <i class="bi bi-image"></i> <span id="equipmentPhotoTitle">{% trans "Product Photo" %}</span>
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -17,7 +17,7 @@
           <img id="equipmentPhotoMain" src="" alt="" class="equipment-photo-main">
         </div>
         <div class="equipment-photo-thumbnails-modal" id="equipmentPhotoThumbnails">
-          <!-- Миниатюры будут добавлены через JavaScript -->
+          <!-- {% trans "Thumbnails will be added via JavaScript" %} -->
         </div>
       </div>
     </div>

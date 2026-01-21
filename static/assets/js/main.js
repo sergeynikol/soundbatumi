@@ -142,37 +142,124 @@
   /**
    * Mobile nav toggle
    */
-  on('click', '.mobile-nav-toggle', function(e) {
-    try {
-      const navbar = select('#navbar');
-      const body = document.body;
-      
-      if (navbar) {
-        const isMobile = navbar.classList.contains('navbar-mobile');
-        
-        if (isMobile) {
-          // Закрываем меню
-          navbar.classList.remove('navbar-mobile');
-          body.style.overflow = '';
-          body.style.position = '';
-        } else {
-          // Открываем меню
-          navbar.classList.add('navbar-mobile');
-          body.style.overflow = 'hidden';
-          body.style.position = 'fixed';
-          body.style.width = '100%';
-        }
-      }
-      
-      if (this) {
-        this.classList.toggle('bi-list');
-        this.classList.toggle('bi-x');
-      }
-    } catch (e) {
-      console.error('Error in mobile nav toggle:', e);
+  
+  let originalParentElement = null;
+  let navbarInitialized = false;
+  
+  // Переместить меню в правильное место на старте
+  const initNavbarPosition = function() {
+    if (navbarInitialized) return;
+    
+    const navbar = select('#navbar');
+    const desktopContainer = select('#navbar-container-desktop');
+    const mobileContainer = select('#navbar-container-mobile');
+    
+    if (navbar && mobileContainer && window.innerWidth <= 991) {
+      // На мобильных перемещаем в мобильный контейнер
+      mobileContainer.appendChild(navbar);
+      originalParentElement = mobileContainer;
+    } else if (navbar && desktopContainer) {
+      originalParentElement = desktopContainer;
     }
-  })
+    
+    navbarInitialized = true;
+  };
+  
+  // Инициализация при загрузке
+  window.addEventListener('load', initNavbarPosition);
+  window.addEventListener('resize', initNavbarPosition);
+  
+  // Функция закрытия меню
+  const closeMobileMenu = function() {
+    const navbar = select('#navbar');
+    const body = document.body;
+    const toggleBtn = select('.mobile-nav-toggle');
+    
+    if (navbar && navbar.classList.contains('navbar-mobile')) {
+      navbar.classList.remove('navbar-mobile');
+      
+      // Вернуть меню обратно
+      if (originalParentElement) {
+        originalParentElement.appendChild(navbar);
+      }
+      
+      // Вернуть иконку бургера
+      if (toggleBtn) {
+        toggleBtn.classList.remove('bi-x');
+        toggleBtn.classList.add('bi-list');
+      }
+      
+      body.style.overflow = '';
+      body.style.position = '';
+      body.style.width = '';
+    }
+  };
+  
+  const toggleMobileMenu = function(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    const navbar = select('#navbar');
+    const body = document.body;
+    
+    if (navbar) {
+      const isOpening = !navbar.classList.contains('navbar-mobile');
+      
+      if (isOpening) {
+        // ОТКРЫВАЕМ меню
+        navbar.classList.add('navbar-mobile');
+        this.classList.remove('bi-list');
+        this.classList.add('bi-x');
+        
+        originalParentElement = navbar.parentElement;
+        document.body.appendChild(navbar);
+        
+        body.style.overflow = 'hidden';
+        body.style.position = 'fixed';
+        body.style.width = '100%';
+      } else {
+        // ЗАКРЫВАЕМ меню
+        closeMobileMenu();
+      }
+    }
+  };
+  
+  // Закрытие меню при клике на ссылку
+  const closeMobileMenuOnLinkClick = function(e) {
+    closeMobileMenu();
+  };
+  
+  // Обработчик через делегирование событий
+  document.addEventListener('click', function(e) {
+    let target = e.target;
+    while (target && target !== document) {
+      if (target.classList && target.classList.contains('mobile-nav-toggle')) {
+        toggleMobileMenu.call(target, e);
+        return;
+      }
+      target = target.parentElement;
+    }
+  });
+  
+  document.addEventListener('touchend', function(e) {
+    let target = e.target;
+    while (target && target !== document) {
+      if (target.classList && target.classList.contains('mobile-nav-toggle')) {
+        e.preventDefault();
+        toggleMobileMenu.call(target, e);
+        return;
+      }
+      target = target.parentElement;
+    }
+  }, { passive: false });
 
+  /**
+   * Mobile nav - close on link click
+   */
+  on('click', '#navbar.navbar-mobile .nav-link:not(.dropdown-toggle):not(.auth-btn-trigger):not(.cart-btn)', closeMobileMenuOnLinkClick, true);
+  
   /**
    * Mobile nav dropdowns activate
    */
@@ -549,6 +636,7 @@
    * Theme Toggle
    */
   const themeToggle = select('#theme-toggle');
+  const themeToggleMobile = select('#theme-toggle-mobile');
   const htmlElement = document.documentElement;
   
   // Get saved theme or default to light
@@ -576,6 +664,13 @@
       }, 300);
     }
     
+    if (themeToggleMobile) {
+      themeToggleMobile.classList.add('theme-switching');
+      setTimeout(() => {
+        themeToggleMobile.classList.remove('theme-switching');
+      }, 300);
+    }
+    
     // Re-initialize background after theme change (debounced)
     themeChangeTimeout = setTimeout(() => {
       try {
@@ -590,6 +685,15 @@
   
   if (themeToggle) {
     themeToggle.addEventListener('click', handleThemeChange);
+  }
+  
+  if (themeToggleMobile) {
+    themeToggleMobile.addEventListener('click', handleThemeChange);
+    // Also add touch event for better mobile support
+    themeToggleMobile.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      handleThemeChange();
+    });
   }
 
   /**
@@ -667,7 +771,8 @@
         }
       })
       .catch(error => {
-        console.error('Ошибка при отправке формы:', error);
+        const t = window.TRANSLATIONS || {};
+        console.error((t.form_submit_error || 'Form submit error') + ':', error);
         
         // Показываем общую ошибку
         const errorAlert = document.createElement('div');
@@ -817,8 +922,9 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
+          const t = window.TRANSLATIONS || {};
           if (successDiv) {
-            successDiv.textContent = data.message || 'Регистрация успешна!';
+            successDiv.textContent = data.message || (t.registration_success || 'Registration successful!');
             successDiv.style.display = 'block';
           }
           
@@ -827,12 +933,12 @@
             window.location.href = data.redirect || '/';
           }, 1500);
         } else {
+          const t = window.TRANSLATIONS || {};
           if (errorDiv) {
-            errorDiv.textContent = data.error || 'Ошибка при регистрации';
+            errorDiv.textContent = data.error || (t.registration_error || 'Registration error');
             errorDiv.style.display = 'block';
           }
           
-          const t = window.TRANSLATIONS || {};
           if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = `<span>${t.register || 'Register'}</span><i class="bi bi-person-plus"></i>`;
@@ -840,8 +946,7 @@
         }
       })
       .catch(error => {
-        console.error('Registration error:', error);
-        const t = window.TRANSLATIONS || {};
+        console.error((t.registration_error || 'Registration error') + ':', error);
         if (errorDiv) {
           errorDiv.textContent = t.form_submit_error || 'Error submitting form. Please try again.';
           errorDiv.style.display = 'block';
@@ -1265,6 +1370,8 @@
       const customerEmailEl = document.getElementById('customerEmail');
       const deliveryAddressEl = document.getElementById('deliveryAddress');
       const customerCommentEl = document.getElementById('customerComment');
+      const installationDateEl = document.getElementById('installationDate');
+      const installationTimeEl = document.getElementById('installationTime');
       const t = window.TRANSLATIONS || {};
       
       // Проверяем, что все элементы существуют
@@ -1281,6 +1388,8 @@
         customer_email: customerEmailEl ? customerEmailEl.value.trim() : '',
         delivery_address: deliveryAddressEl.value.trim(),
         customer_comment: customerCommentEl ? customerCommentEl.value.trim() : '',
+        installation_date: installationDateEl ? installationDateEl.value.trim() : '',
+        installation_time: installationTimeEl ? installationTimeEl.value.trim() : '',
         cart_items: this.cart
       };
       
@@ -1302,6 +1411,14 @@
       }
       if (!formData.delivery_address) {
         this.showCheckoutError(t.please_enter_address || 'Please enter delivery address');
+        return;
+      }
+      if (!formData.installation_date) {
+        this.showCheckoutError(t.please_enter_installation_date || 'Please select installation date');
+        return;
+      }
+      if (!formData.installation_time) {
+        this.showCheckoutError(t.please_enter_installation_time || 'Please select installation time');
         return;
       }
       if (this.cart.length === 0) {
@@ -1802,10 +1919,12 @@
             
             mainPhoto.onload = function() {
               this.style.opacity = '1';
-              console.log('Изображение загружено:', fullImageUrl);
+              const t = window.TRANSLATIONS || {};
+              console.log(t.image_loaded || 'Image loaded:', fullImageUrl);
             };
             mainPhoto.onerror = function() {
-              console.error('Ошибка загрузки изображения:', fullImageUrl);
+              const t = window.TRANSLATIONS || {};
+              console.error(t.image_load_error || 'Error loading image:', fullImageUrl);
               this.style.opacity = '1';
               // Пробуем оригинальный URL
               this.src = mainImageUrl;
@@ -1869,10 +1988,12 @@
             mainPhotoImg.src = fullImageUrl;
             mainPhotoImg.onload = function() {
               this.style.opacity = '1';
-              console.log('Фото переключено на:', fullImageUrl);
+              const t = window.TRANSLATIONS || {};
+              console.log(t.photo_switched || 'Photo switched to:', fullImageUrl);
             };
             mainPhotoImg.onerror = function() {
-              console.error('Ошибка загрузки изображения:', fullImageUrl);
+              const t = window.TRANSLATIONS || {};
+              console.error(t.image_load_error || 'Error loading image:', fullImageUrl);
               this.style.opacity = '1';
               // Пробуем оригинальный URL
               this.src = imageUrl;

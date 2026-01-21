@@ -1,12 +1,22 @@
 {% load static wagtailimages_tags i18n %}
-{% load i18n %}
 
-{% comment %} {% if page.get_translations.live %} {% endcomment %}
-    {% for cotact in contakts %}
-        <p>
-            <strong>{{ cotact.name}}</strong><br>
-            <i><a href={{ cotact.url_contact_data}}>{{ cotact.phone }}</a></i>
-            <strong>{{ cotact.description }}</strong><br><hr>
-        </p>
-    {% endfor %}
-{% comment %} {% endif %} {% endcomment %}
+{% for contact in contakts %}
+    <div class="contact-item">
+        {% if contact.name %}
+            <strong>{{ contact.name }}</strong><br>
+        {% endif %}
+        {% if contact.phone %}
+            {% if contact.url_contact_data %}
+                <i class="bx bx-phone"></i> <a href="{{ contact.url_contact_data }}">{{ contact.phone }}</a><br>
+            {% else %}
+                <i class="bx bx-phone"></i> {{ contact.phone }}<br>
+            {% endif %}
+        {% endif %}
+        {% if contact.description %}
+            <span class="contact-description">{{ contact.description }}</span>
+        {% endif %}
+        {% if not forloop.last %}<hr>{% endif %}
+    </div>
+{% empty %}
+    <p class="text-muted">{% trans "No contact information available" %}</p>
+{% endfor %}

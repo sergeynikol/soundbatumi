@@ -1,7 +1,17 @@
 {% load static wagtailimages_tags %}
 
-{% for element in carusel%}
-    <div class="carousel-item" data-bs-interval="{{element.interval}}">
-      <a href={{ element.link_band }}><div class="text-center img-fluid"><img class="img-fluid"src="{{element.photo_in_carousel.url}}"></div></a>
-    </div>  
+{% for element in carusel %}
+    <div class="carousel-item{% if forloop.first %} active{% endif %}" {% if element.interval %}data-interval="{{element.interval}}"{% else %}data-interval="3000"{% endif %}>
+      <a href="{{ element.link_band }}" target="_blank" rel="noopener noreferrer">
+        <div class="text-center">
+          <img class="img-fluid" src="{{ element.photo_in_carousel.url }}" alt="{% if element.link_band %}{{ element.link_band }}{% else %}Artist{% endif %}">
+        </div>
+      </a>
+    </div>
+{% empty %}
+    <div class="carousel-item active">
+      <div class="text-center">
+        <img src="{% static 'assets/img/Artists.png' %}" class="img-fluid" alt="Artists">
+      </div>
+    </div>
 {% endfor %}

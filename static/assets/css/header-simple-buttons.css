@@ -1,0 +1,139 @@
+/* ===== УПРОЩЕННЫЕ СТИЛИ ДЛЯ КНОПОК HEADER ===== */
+
+/* Общий стиль для кнопки переключения темы */
+.theme-toggle-btn {
+  color: var(--accent-color);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(36, 135, 206, 0.1);
+  border: 2px solid rgba(36, 135, 206, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  padding: 0;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--accent-hover);
+  background: rgba(36, 135, 206, 0.2);
+  border-color: var(--accent-color);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(36, 135, 206, 0.3);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(79, 172, 254, 0.15);
+  border-color: rgba(79, 172, 254, 0.3);
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background: rgba(79, 172, 254, 0.25);
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+/* Переключение иконок темы */
+.theme-toggle-btn i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.theme-toggle-btn .bi-sun-fill {
+  opacity: 1;
+}
+
+.theme-toggle-btn .bi-moon-fill {
+  opacity: 0;
+}
+
+[data-theme="dark"] .theme-toggle-btn .bi-sun-fill {
+  opacity: 0;
+}
+
+[data-theme="dark"] .theme-toggle-btn .bi-moon-fill {
+  opacity: 1;
+}
+
+/* Кнопка бургер меню */
+.mobile-nav-toggle {
+  color: var(--accent-color);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(36, 135, 206, 0.1);
+  border: 2px solid rgba(36, 135, 206, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1006;
+  pointer-events: auto;
+}
+
+.mobile-nav-toggle:hover {
+  color: var(--accent-hover);
+  background: rgba(36, 135, 206, 0.2);
+  border-color: var(--accent-color);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(36, 135, 206, 0.3);
+}
+
+.mobile-nav-toggle:active {
+  transform: scale(0.95);
+}
+
+[data-theme="dark"] .mobile-nav-toggle {
+  background: rgba(79, 172, 254, 0.15);
+  border-color: rgba(79, 172, 254, 0.3);
+}
+
+[data-theme="dark"] .mobile-nav-toggle:hover {
+  background: rgba(79, 172, 254, 0.25);
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+.mobile-nav-toggle.bi-x {
+  color: #fff;
+}
+
+/* Адаптивные размеры */
+@media (max-width: 575px) {
+  .theme-toggle-btn,
+  .mobile-nav-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+}
+
+/* Убираем все fancy стили */
+.theme-toggle-btn::before,
+.theme-toggle-btn::after,
+.mobile-nav-toggle::before,
+.mobile-nav-toggle::after {
+  display: none !important;
+}
+
+/* Убираем сложные анимации */
+.theme-icon-light,
+.theme-icon-dark {
+  animation: none !important;
+}

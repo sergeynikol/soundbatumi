@@ -1,26 +1,108 @@
 {% load static wagtailcore_tags wagtailuserbar menu_tags %}
 
-<header id="header" >
-    <div class="container d-flex align-items-center justify-content-between">
-
-   <div>
-     <a href="/" class="logo"><img src="{% static 'assets/img/Logo sound Batumi gorisontal.webp' %}" alt="" class="img-fluid"></a>
-     </div>
-     <div>
-     <h3 class="text-center"><a href=tel:+995599643816>+995 599643816</a>
-       <a href="https://t.me/sergonikola" class="telegram"><i class="bx bxl-telegram"></i></a>
-       <a href="https://wa.me/+995599643816" class="whatsapp text-success"><i class="bx bxl-whatsapp"></i></a>
-       <a href="https://www.instagram.com/sound_batumi/?hl=ru" class="instagram text-danger"><i class="bx bxl-instagram"></i></a>
-     </h3>
-   </div>
-   <!-- Theme Toggle -->
-   <div class="theme-toggle-wrapper">
-     <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-       <i class="bi bi-sun-fill theme-icon-light"></i>
-       <i class="bi bi-moon-fill theme-icon-dark"></i>
-     </button>
-   </div> 
-    {% get_site_root as site_root%}
-    {% menus parent=site_root %}
+<!-- Modern Glassmorphic Header -->
+<header id="header" class="modern-glass-header">
+  <div class="container">
+    <!-- Desktop Layout -->
+    <div class="header-desktop d-none d-lg-block">
+      <!-- Top Row: Logo, Contacts, Theme Toggle -->
+      <div class="header-top-desktop">
+        <!-- Logo -->
+        <div class="header-logo-desktop" data-aos="fade-right" data-aos-delay="100">
+          <a href="/" class="logo">
+            <img src="{% static 'assets/img/Logo sound Batumi gorisontal.webp' %}" alt="Sound Batumi Logo" class="img-fluid">
+          </a>
+        </div>
+        
+        <!-- Contacts & Theme -->
+        <div class="header-contacts-desktop" data-aos="fade-left" data-aos-delay="200">
+          <!-- Phone -->
+          <a href="tel:+995599643816" class="header-phone-link glass-button">
+            <i class="bx bxs-phone-call"></i>
+            <span>+995 599 643 816</span>
+          </a>
+          
+          <!-- Social Links -->
+          <div class="header-social-links">
+            <a href="https://t.me/sergonikola" class="social-btn telegram" title="Telegram" data-aos="zoom-in" data-aos-delay="250">
+              <i class="bx bxl-telegram"></i>
+              <span class="social-label">Telegram</span>
+            </a>
+            <a href="https://wa.me/+995599643816" class="social-btn whatsapp" title="WhatsApp" data-aos="zoom-in" data-aos-delay="300">
+              <i class="bx bxl-whatsapp"></i>
+              <span class="social-label">WhatsApp</span>
+            </a>
+            <a href="https://www.instagram.com/sound_batumi/?hl=ru" class="social-btn instagram" title="Instagram" data-aos="zoom-in" data-aos-delay="350">
+              <i class="bx bxl-instagram"></i>
+              <span class="social-label">Instagram</span>
+            </a>
+          </div>
+          
+          <!-- Theme Toggle -->
+          <div class="theme-toggle-wrapper-desktop" data-aos="zoom-in" data-aos-delay="400">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme" type="button">
+              <i class="bi bi-sun-fill"></i>
+              <i class="bi bi-moon-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Row: Navigation Menu (ЕДИНСТВЕННОЕ) -->
+      <div class="header-bottom-desktop" data-aos="fade-up" data-aos-delay="450">
+        <div id="navbar-container-desktop">
+          {% wagtail_site as current_site %}
+          {% if current_site and current_site.root_page %}
+            {% menus parent=current_site.root_page %}
+          {% endif %}
+        </div>
+      </div>
     </div>
+    
+    <!-- Mobile Layout -->
+    <div class="header-mobile d-lg-none">
+      <!-- Logo -->
+      <div class="header-mobile-logo" data-aos="fade-down" data-aos-delay="100">
+        <a href="/" class="logo">
+          <img src="{% static 'assets/img/Logo sound Batumi gorisontal.webp' %}" alt="Sound Batumi Logo" class="img-fluid">
+        </a>
+      </div>
+      
+      <!-- Phone -->
+      <div class="header-mobile-phone" data-aos="fade-up" data-aos-delay="200">
+        <a href="tel:+995599643816" class="header-phone-link-mobile glass-button">
+          <i class="bx bxs-phone-call"></i>
+          <span>+995 599 643 816</span>
+        </a>
+      </div>
+      
+      <!-- Social Links & Buttons Row -->
+      <div class="header-mobile-social-row" data-aos="fade-up" data-aos-delay="300">
+        <!-- Theme Toggle (Left) -->
+        <button id="theme-toggle-mobile" class="theme-toggle-btn" aria-label="Toggle theme" type="button">
+          <i class="bi bi-sun-fill"></i>
+          <i class="bi bi-moon-fill"></i>
+        </button>
+        
+        <!-- Social Links (Center) -->
+        <div class="header-mobile-social">
+          <a href="https://t.me/sergonikola" class="social-btn telegram-mobile" title="Telegram">
+            <i class="bx bxl-telegram"></i>
+          </a>
+          <a href="https://wa.me/+995599643816" class="social-btn whatsapp-mobile" title="WhatsApp">
+            <i class="bx bxl-whatsapp"></i>
+          </a>
+          <a href="https://www.instagram.com/sound_batumi/?hl=ru" class="social-btn instagram-mobile" title="Instagram">
+            <i class="bx bxl-instagram"></i>
+          </a>
+        </div>
+        
+        <!-- Menu Toggle (Right) - контейнер для меню -->
+        <div id="navbar-container-mobile"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Animated Background Elements -->
+  <div class="header-bg-particles"></div>
 </header>

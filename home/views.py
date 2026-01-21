@@ -117,13 +117,13 @@ def create_order(request):
             }, status=400)
         
         # Получаем данные заказа
-        delivery_address = data.get('delivery_address', '').strip()
-        customer_name = data.get('customer_name', '').strip()
-        customer_phone = data.get('customer_phone', '').strip()
-        customer_email = data.get('customer_email', '').strip()
-        customer_comment = data.get('customer_comment', '').strip()
-        installation_date = data.get('installation_date', '').strip()
-        installation_time = data.get('installation_time', '').strip()
+        delivery_address = (data.get('delivery_address') or '').strip()
+        customer_name = (data.get('customer_name') or '').strip()
+        customer_phone = (data.get('customer_phone') or '').strip()
+        customer_email = (data.get('customer_email') or '').strip()
+        customer_comment = (data.get('customer_comment') or '').strip()
+        installation_date = (data.get('installation_date') or '').strip()
+        installation_time = (data.get('installation_time') or '').strip()
         cart_items = data.get('cart_items', [])
         
         # Валидация данных заказа
@@ -727,70 +727,9 @@ def telegram_callback(request):
         else:
             logger.warning(f'⚠️ HTTP ошибка при ответе на callback query для заказа {order.order_number}: {answer_response.status_code}')
         
-        # 2. Отправляем сообщение о заказе пользователю в личные сообщения
-        # Используем sendMessage с текстом заказа (надежнее, чем copyMessage/forwardMessage)
-        copy_success = False
-        
-        # Формируем сообщение о заказе
-        try:
-            order_message = format_order_message(order)
-        except Exception as e:
-            logger.error(f'Ошибка при формировании сообщения о заказе: {e}')
-            order_message = (
-                f'🆕 Новый заказ #{order.order_number}\n\n'
-                f'👤 Клиент: {order.customer_name}\n'
-                f'📱 Телефон: {order.customer_phone}\n'
-                f'📍 Адрес: {order.delivery_address}\n'
-                f'💰 Сумма: {order.total_amount:.2f} ₾'
-            )
-        
-        # Отправляем сообщение пользователю
-        send_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
-        send_payload = {
-            'chat_id': user_id,
-            'text': order_message,
-            'parse_mode': 'HTML'
-        }
-        
-        logger.info(
-            f'Попытка отправить сообщение пользователю: chat_id={user_id}, user={user_first_name}'
-        )
-        
-        send_response = requests.post(send_url, json=send_payload, timeout=10)
-        
-        if send_response.status_code == 200:
-            send_result = send_response.json()
-            if send_result.get('ok'):
-                copy_success = True
-                logger.info(
-                    f'✅ Сообщение о заказе {order.order_number} отправлено пользователю {user_id} ({user_first_name})'
-                )
-            else:
-                error_desc = send_result.get('description', 'Unknown error')
-                logger.error(
-                    f'❌ Не удалось отправить сообщение пользователю {user_id} для заказа {order.order_number}: {error_desc}'
-                )
-                # Если пользователь не начал диалог, это нормально - просто логируем
-                if 'bot was blocked' in error_desc.lower() or 'chat not found' in error_desc.lower():
-                    logger.warning(
-                        f'⚠️ Пользователь {user_id} ({user_first_name}) не начал диалог с ботом. '
-                        f'Попросите пользователя написать боту /start'
-                    )
-        else:
-            try:
-                error_data = send_response.json()
-                error_desc = error_data.get('description', f'HTTP {send_response.status_code}')
-            except:
-                error_desc = f'HTTP {send_response.status_code}: {send_response.text}'
-            logger.error(
-                f'❌ HTTP ошибка при отправке сообщения пользователю {user_id} для заказа {order.order_number}: {error_desc}'
-            )
-        
-        # 3. Удаляем оригинальное сообщение из группы
-        # Важно: удаляем сообщение ДО отправки уведомления в группу
-        logger.info(
-            f'Попытка удалить сообщение: chat_id={chat_id}, message_id={message_id}'
-        )
+        # 2. Удаляем оригинальное сообщение из группы ПЕРВЫМ ДЕЛОМ
+        # Это важно, чтобы сразу убрать сообщение с кнопкой
+        logger.info(f'Попытка удалить сообщение: chat_id={chat_id}, message_id={message_id}')
         
         delete_url = f'https://api.telegram.org/bot{bot_token}/deleteMessage'
         delete_payload = {
@@ -805,14 +744,10 @@ def telegram_callback(request):
             delete_result = delete_response.json()
             if delete_result.get('ok'):
                 delete_success = True
-                logger.info(
-                    f'✅ Сообщение о заказе {order.order_number} удалено из группы {chat_id}'
-                )
+                logger.info(f'✅ Сообщение о заказе {order.order_number} удалено из группы {chat_id}')
             else:
                 error_desc = delete_result.get('description', 'Unknown error')
-                logger.error(
-                    f'❌ Ошибка при удалении сообщения из группы для заказа {order.order_number}: {error_desc}'
-                )
+                logger.error(f'❌ Ошибка при удалении сообщения из группы для заказа {order.order_number}: {error_desc}')
                 # Специальная обработка для разных типов ошибок
                 if 'not enough rights' in error_desc.lower() or 'message can\'t be deleted' in error_desc.lower():
                     logger.warning(
@@ -820,26 +755,20 @@ def telegram_callback(request):
                         f'Дайте боту права администратора или права на удаление сообщений.'
                     )
                 elif 'message to delete not found' in error_desc.lower():
-                    logger.info(
-                        f'ℹ️ Сообщение {message_id} уже удалено из группы {chat_id} (это нормально)'
-                    )
+                    logger.info(f'ℹ️ Сообщение {message_id} уже удалено из группы {chat_id} (это нормально)')
                     delete_success = True  # Считаем успешным, если сообщение уже удалено
                 elif 'bad request' in error_desc.lower():
-                    logger.warning(
-                        f'⚠️ Неверный запрос на удаление. Проверьте chat_id и message_id.'
-                    )
+                    logger.warning(f'⚠️ Неверный запрос на удаление. Проверьте chat_id и message_id.')
         else:
             try:
                 error_data = delete_response.json()
                 error_desc = error_data.get('description', f'HTTP {delete_response.status_code}')
             except:
                 error_desc = f'HTTP {delete_response.status_code}: {delete_response.text}'
-            logger.error(
-                f'❌ HTTP ошибка при удалении сообщения из группы для заказа {order.order_number}: {error_desc}'
-            )
+            logger.error(f'❌ HTTP ошибка при удалении сообщения из группы для заказа {order.order_number}: {error_desc}')
         
-        # 4. Отправляем сообщение в группу о том, кто взял заказ (после удаления)
-        # Отправляем уведомление независимо от успеха удаления, чтобы группа знала, кто взял заказ
+        # 3. Отправляем сообщение в группу о том, кто взял заказ (после удаления)
+        # Это сообщение заменит удаленное сообщение
         try:
             group_notification_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
             
@@ -868,28 +797,66 @@ def telegram_callback(request):
             if group_notification_response.status_code == 200:
                 group_notification_result = group_notification_response.json()
                 if group_notification_result.get('ok'):
-                    logger.info(
-                        f'✅ Уведомление о взятии заказа {order.order_number} в обработку отправлено в группу {chat_id}'
-                    )
+                    logger.info(f'✅ Уведомление о взятии заказа {order.order_number} в обработку отправлено в группу {chat_id}')
                 else:
                     error_desc = group_notification_result.get('description', 'Unknown error')
-                    logger.warning(
-                        f'⚠️ Не удалось отправить уведомление в группу для заказа {order.order_number}: {error_desc}'
-                    )
+                    logger.warning(f'⚠️ Не удалось отправить уведомление в группу для заказа {order.order_number}: {error_desc}')
             else:
                 try:
                     error_data = group_notification_response.json()
                     error_desc = error_data.get('description', f'HTTP {group_notification_response.status_code}')
                 except:
                     error_desc = f'HTTP {group_notification_response.status_code}: {group_notification_response.text}'
-                logger.warning(
-                    f'⚠️ HTTP ошибка при отправке уведомления в группу для заказа {order.order_number}: {error_desc}'
-                )
+                logger.warning(f'⚠️ HTTP ошибка при отправке уведомления в группу для заказа {order.order_number}: {error_desc}')
         except Exception as e:
             logger.error(f'Ошибка при отправке уведомления в группу: {e}', exc_info=True)
         
-        # 5. Уведомление пользователю уже отправлено на шаге 2 (вместе с сообщением о заказе)
-        # Дополнительное уведомление не требуется, так как сообщение о заказе уже содержит всю информацию
+        # 4. Отправляем сообщение о заказе пользователю в личные сообщения от бота
+        # Формируем сообщение о заказе
+        try:
+            order_message = format_order_message(order)
+        except Exception as e:
+            logger.error(f'Ошибка при формировании сообщения о заказе: {e}')
+            order_message = (
+                f'🆕 <b>Новый заказ #{order.order_number}</b>\n\n'
+                f'👤 <b>Клиент:</b> {order.customer_name}\n'
+                f'📱 <b>Телефон:</b> {order.customer_phone}\n'
+                f'📍 <b>Адрес:</b> {order.delivery_address}\n'
+                f'💰 <b>Сумма:</b> {order.total_amount:.2f} ₾'
+            )
+        
+        # Отправляем сообщение пользователю от бота
+        send_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+        send_payload = {
+            'chat_id': user_id,
+            'text': order_message,
+            'parse_mode': 'HTML'
+        }
+        
+        logger.info(f'Попытка отправить сообщение о заказе пользователю: chat_id={user_id}, user={user_first_name}')
+        
+        send_response = requests.post(send_url, json=send_payload, timeout=10)
+        
+        if send_response.status_code == 200:
+            send_result = send_response.json()
+            if send_result.get('ok'):
+                logger.info(f'✅ Сообщение о заказе {order.order_number} отправлено пользователю {user_id} ({user_first_name}) от бота')
+            else:
+                error_desc = send_result.get('description', 'Unknown error')
+                logger.error(f'❌ Не удалось отправить сообщение пользователю {user_id} для заказа {order.order_number}: {error_desc}')
+                # Если пользователь не начал диалог, это нормально - просто логируем
+                if 'bot was blocked' in error_desc.lower() or 'chat not found' in error_desc.lower():
+                    logger.warning(
+                        f'⚠️ Пользователь {user_id} ({user_first_name}) не начал диалог с ботом. '
+                        f'Попросите пользователя написать боту /start'
+                    )
+        else:
+            try:
+                error_data = send_response.json()
+                error_desc = error_data.get('description', f'HTTP {send_response.status_code}')
+            except:
+                error_desc = f'HTTP {send_response.status_code}: {send_response.text}'
+            logger.error(f'❌ HTTP ошибка при отправке сообщения пользователю {user_id} для заказа {order.order_number}: {error_desc}')
         
         # 6. Обновляем статус заказа в базе данных
         # Обновляем статус независимо от успеха удаления сообщения
@@ -913,3 +880,53 @@ def telegram_callback(request):
         logger.error(f'Ошибка при обработке callback: {e}', exc_info=True)
         return JsonResponse({'ok': True})  # Отвечаем ok, чтобы Telegram не повторял запрос
 
+
+def custom_404_view(request, exception=None):
+    """
+    Кастомный обработчик 404 ошибки
+    Рендерит красивую страницу 404 в стиле сайта
+    """
+    from django.shortcuts import render
+    from django.template import RequestContext
+    from django.http import Http404
+    
+    try:
+        # Пытаемся отрендерить кастомный шаблон 404
+        context = {'request': request}
+        
+        # Пытаемся получить информацию о сайте для контекста
+        try:
+            from wagtail.models import Site
+            site = Site.find_for_request(request)
+            if site:
+                context['site'] = site
+        except Exception:
+            pass  # Игнорируем ошибки получения сайта
+        
+        return render(request, '404.html', context, status=404)
+    except Exception as e:
+        # Если не удалось отрендерить кастомный шаблон,
+        # возвращаем простую страницу 404
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f'Error rendering 404 template: {e}', exc_info=True)
+        
+        # Возвращаем простой HTML ответ
+        from django.http import HttpResponse
+        return HttpResponse(
+            '<html><head><title>404 - Page not found</title></head>'
+            '<body style="font-family: Arial; text-align: center; padding: 50px;">'
+            '<h1>404</h1><p>Page not found</p>'
+            '<p><a href="/">Go to homepage</a></p>'
+            '</body></html>',
+            status=404
+        )
+
+
+def test_404_view(request):
+    """
+    Тестовый view для просмотра страницы 404 в режиме разработки
+    Использование: http://localhost:8000/test-404/
+    """
+    from django.shortcuts import render
+    return render(request, '404.html', status=404)

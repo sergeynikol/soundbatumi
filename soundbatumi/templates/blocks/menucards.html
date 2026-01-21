@@ -1,4 +1,4 @@
-{% load static wagtailimages_tags wagtailcore_tags menu_tags %}
+{% load static wagtailimages_tags wagtailcore_tags menu_tags i18n %}
 
 
 
@@ -12,10 +12,10 @@
     <div class="modern-card">
       <div class="modern-card-bg"></div>
       <div class="modern-card-glow"></div>
-      <a href="{% pageurl linked_page %}" class="modern-card-link" title="Перейти на страницу: {{ linked_page.title }}">
+      <a href="{% pageurl linked_page %}" class="modern-card-link" title="{% trans 'Go to page' %}: {{ linked_page.title }}">
         <div class="modern-card-image-container">
           <div class="modern-card-image-wrapper">
-            {% image value.photo original class="modern-card-image" %}
+            {% image value.photo fill-400x400 class="modern-card-image" %}
             <div class="modern-card-overlay"></div>
             <div class="modern-card-badge">
               <i class="bi bi-arrow-right"></i>
@@ -32,7 +32,7 @@
             <p class="modern-card-description">{{ self.discription|striptags }}</p>
           {% endif %}
           <div class="modern-card-footer">
-            <span class="modern-card-cta">Подробнее</span>
+            <span class="modern-card-cta">{% trans "Learn more" %}</span>
             <i class="bi bi-arrow-right-circle modern-card-arrow"></i>
           </div>
         </div>
@@ -45,7 +45,7 @@
       <div class="modern-card-glow"></div>
       <div class="modern-card-image-container">
         <div class="modern-card-image-wrapper">
-          {% image value.photo original class="modern-card-image" %}
+          {% image value.photo fill-400x400 class="modern-card-image" %}
           <div class="modern-card-overlay"></div>
         </div>
       </div>

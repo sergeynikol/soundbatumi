@@ -1,63 +1,106 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags menu_tags %}
+{% load static wagtailcore_tags menu_tags i18n %}
 
-{% block title %}404 - Страница не найдена{% endblock %}
+{% block title %}404 - {% trans "Page not found" %}{% endblock %}
 
 {% block body_class %}template-404{% endblock %}
 
 {% block content %}
 <!-- ======= 404 Error Section ======= -->
 <section id="error-404" class="error-404-section">
+  <!-- Animated Background Elements -->
+  <div class="error-bg-elements">
+    <div class="error-circle error-circle-1"></div>
+    <div class="error-circle error-circle-2"></div>
+    <div class="error-circle error-circle-3"></div>
+    <div class="error-circle error-circle-4"></div>
+  </div>
+  
+  <!-- Floating Musical Notes -->
+  <div class="error-decoration">
+    <div class="decoration-note decoration-note-1">♪</div>
+    <div class="decoration-note decoration-note-2">♫</div>
+    <div class="decoration-note decoration-note-3">♬</div>
+    <div class="decoration-note decoration-note-4">♪</div>
+    <div class="decoration-note decoration-note-5">♫</div>
+    <div class="decoration-note decoration-note-6">♬</div>
+  </div>
+  
   <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
-      <div class="col-lg-8 text-center">
+      <div class="col-lg-10 col-xl-8 text-center">
         <div class="error-content" data-aos="fade-up" data-aos-duration="1000">
           <!-- Animated 404 Number -->
-          <div class="error-number">
-            <span class="error-4">4</span>
-            <span class="error-0">0</span>
-            <span class="error-4-second">4</span>
+          <div class="error-number-wrapper">
+            <div class="error-number">
+              <span class="error-4" data-aos="fade-right" data-aos-delay="100">4</span>
+              <span class="error-0" data-aos="zoom-in" data-aos-delay="300">0</span>
+              <span class="error-4-second" data-aos="fade-left" data-aos-delay="500">4</span>
+            </div>
+          </div>
+          
+          <!-- Error Icon -->
+          <div class="error-icon-wrapper" data-aos="fade-up" data-aos-delay="700">
+            <div class="error-icon">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
           </div>
           
           <!-- Error Message -->
-          <h1 class="error-title">Страница не найдена</h1>
-          <p class="error-description">
-            К сожалению, запрашиваемая страница не существует или была перемещена.
+          <h1 class="error-title" data-aos="fade-up" data-aos-delay="800">
+            {% trans "Page not found" %}
+          </h1>
+          <p class="error-description" data-aos="fade-up" data-aos-delay="900">
+            {% trans "Unfortunately, the requested page does not exist or has been moved." %}
             <br>
-            Возможно, вы ввели неправильный адрес или страница была удалена.
+            {% trans "You may have entered the wrong address or the page has been deleted." %}
           </p>
           
           <!-- Action Buttons -->
-          <div class="error-actions" data-aos="fade-up" data-aos-delay="200" data-aos-duration="1000">
+          <div class="error-actions" data-aos="fade-up" data-aos-delay="1000" data-aos-duration="1000">
             <a href="/" class="btn btn-primary btn-home">
-              <i class="bi bi-house-door"></i> Вернуться на главную
+              <i class="bi bi-house-door"></i>
+              <span>{% trans "Back to Home" %}</span>
             </a>
             <button onclick="window.history.back()" class="btn btn-outline-secondary btn-back">
-              <i class="bi bi-arrow-left"></i> Назад
+              <i class="bi bi-arrow-left"></i>
+              <span>{% trans "Back" %}</span>
             </button>
           </div>
           
           <!-- Helpful Links -->
-          <div class="error-links" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">
-            <p class="error-links-title">Полезные ссылки:</p>
+          <div class="error-links" data-aos="fade-up" data-aos-delay="1200" data-aos-duration="1000">
+            <p class="error-links-title">{% trans "Helpful links:" %}</p>
             <div class="error-links-list">
               <a href="/" class="error-link-item">
-                <i class="bi bi-house"></i> Главная
+                <i class="bi bi-house"></i>
+                <span>{% trans "Home" %}</span>
               </a>
-              {% wagtail_site as current_site %}
-              {% if current_site %}
-                {% get_site_root as site_root %}
-                {% for menuitem in site_root.get_children.live.in_menu %}
+              {% if site and site.root_page %}
+                {% for menuitem in site.root_page.get_children.live.in_menu %}
                   <a href="{% pageurl menuitem %}" class="error-link-item">
-                    <i class="bi bi-link-45deg"></i> {{ menuitem.title }}
+                    <i class="bi bi-link-45deg"></i>
+                    <span>{{ menuitem.title }}</span>
+                  </a>
+                {% empty %}
+                  {# Если меню пустое, показываем стандартные ссылки #}
+                  <a href="/equipment/" class="error-link-item">
+                    <i class="bi bi-music-note-list"></i>
+                    <span>{% trans "Equipment" %}</span>
+                  </a>
+                  <a href="/contact/" class="error-link-item">
+                    <i class="bi bi-envelope"></i>
+                    <span>{% trans "Contact" %}</span>
                   </a>
                 {% endfor %}
               {% else %}
                 <a href="/equipment/" class="error-link-item">
-                  <i class="bi bi-music-note-list"></i> Оборудование
+                  <i class="bi bi-music-note-list"></i>
+                  <span>{% trans "Equipment" %}</span>
                 </a>
                 <a href="/contact/" class="error-link-item">
-                  <i class="bi bi-envelope"></i> Контакты
+                  <i class="bi bi-envelope"></i>
+                  <span>{% trans "Contact" %}</span>
                 </a>
               {% endif %}
             </div>
@@ -65,14 +108,6 @@
         </div>
       </div>
     </div>
-  </div>
-  
-  <!-- Decorative Elements -->
-  <div class="error-decoration">
-    <div class="decoration-note decoration-note-1">♪</div>
-    <div class="decoration-note decoration-note-2">♫</div>
-    <div class="decoration-note decoration-note-3">♬</div>
-    <div class="decoration-note decoration-note-4">♪</div>
   </div>
 </section>
 {% endblock %}

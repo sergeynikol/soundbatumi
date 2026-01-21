@@ -4,18 +4,16 @@
   <!-- ======= Main Title ======= -->
   {% if page.banner_slider_settings %}
     {% for block in page.banner_slider_settings %}
-      {% if block.block_type == 'banner_slider' %}
-        {% if block.value.main_title %}
-          <div class="main-page-title">
-            <div class="container">
-              <div class="row">
-                <div class="col-12">
-                  {{ block.value.main_title|richtext }}
-                </div>
+      {% if block.block_type == 'banner_slider' and block.value.main_title %}
+        <div class="main-page-title">
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                {{ block.value.main_title|richtext }}
               </div>
             </div>
           </div>
-        {% endif %}
+        </div>
       {% endif %}
     {% endfor %}
   {% endif %}
@@ -27,10 +25,7 @@
         {% include_block block %}
       {% endif %}
     {% endfor %}
-  {% else %}
-    {% include "blocks/banner_slider.html" %}
   {% endif %}
   
   {% include "home/cards.html" %}
 {% endblock content %}
- 

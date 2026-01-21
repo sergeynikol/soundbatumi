@@ -11,6 +11,11 @@ from search import views as search_views
 from home import views as home_views
 from home import wagtail_views
 
+
+# Custom error handlers
+handler404 = 'home.views.custom_404_view'
+handler500 = 'django.views.defaults.server_error'
+
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
@@ -43,6 +48,7 @@ urlpatterns = [
     ),
     # allauth URLs
     path("accounts/", include("allauth.urls")),
+    path("test-404/", home_views.test_404_view, name="test_404"),
 ]
 
 
