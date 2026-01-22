@@ -1002,7 +1002,7 @@ msgstr "Удалить"
 #: venv/lib/python3.12/site-packages/django/forms/formsets.py:484
 #: venv/lib/python3.12/site-packages/django/forms/formsets.py:491
 msgid "Order"
-msgstr ""
+msgstr "Заказать"
 
 #: soundbatumi/templates/base.html:193
 #, python-format

@@ -48,6 +48,11 @@
   <link href="{% static 'assets/img/favicon.ico' %}" rel="icon">
   {% comment %} <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon"> {% endcomment %}
 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount+Single:wght@100..900&family=Gravitas+One&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  
   <!-- Vendor CSS Files -->
   <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -60,7 +65,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
   <!-- Template Main CSS File -->
-  <link href="{% static 'assets/css/style.css' %}?v=20250121-0605" rel="stylesheet">
+  <link href="{% static 'assets/css/style.css' %}?v=20250121-0855" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -100,6 +105,9 @@
   <!-- ======= Equipment Photo Modal ======= -->
   {% include "blocks/equipment_photo_modal.html" %}
 
+  <!-- ======= Map Modal ======= -->
+  {% include "blocks/map_modal.html" %}
+
   <!-- ======= Footer ======= -->
   {% include "footer.html" %}
 
@@ -118,7 +126,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="{% static 'assets/js/main.js' %}?v=20250121-0345"></script>
+  <script src="{% static 'assets/js/main.js' %}?v=20250121-0845"></script>
   
   <!-- Language data for JavaScript -->
   <script>

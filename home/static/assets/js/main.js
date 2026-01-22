@@ -2077,4 +2077,78 @@
     document.body.style.overflow = '';
   });
 
+  // Map Modal Close Handler - используем нативный JS и jQuery вместе
+  function closeMapModal() {
+    const modal = document.getElementById('mapModal');
+    if (modal) {
+      // Пробуем Bootstrap метод
+      if (typeof $ !== 'undefined' && $.fn.modal) {
+        $('#mapModal').modal('hide');
+      }
+      
+      // Нативный способ закрытия
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = '';
+      document.body.style.overflow = '';
+      
+      // Удаляем backdrop
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+    }
+  }
+
+  // Обработчик для кнопки закрытия - используем делегирование событий
+  document.addEventListener('click', function(e) {
+    const target = e.target;
+    const closeBtn = target.closest('#mapModal .close, #mapModal .map-modal-close');
+    
+    if (closeBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      closeMapModal();
+      return false;
+    }
+  }, true); // Используем capture phase для перехвата события раньше
+
+  // jQuery обработчик как резерв
+  $(document).ready(function() {
+    // Прямой обработчик на кнопку
+    $('#mapModal .close, #mapModal .map-modal-close').on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeMapModal();
+      return false;
+    });
+
+    // Обработчик на span внутри кнопки
+    $('#mapModal .close span, #mapModal .map-modal-close span').on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).closest('.close, .map-modal-close').trigger('click');
+      return false;
+    });
+
+    // Очистка при закрытии модального окна
+    $('#mapModal').on('hidden.bs.modal', function() {
+      closeMapModal();
+    });
+
+    // Закрытие по клику на backdrop
+    $(document).on('click', '#mapModal.modal', function(e) {
+      if ($(e.target).is('#mapModal')) {
+        closeMapModal();
+      }
+    });
+
+    // Закрытие по ESC
+    $(document).on('keydown', function(e) {
+      if ((e.key === 'Escape' || e.keyCode === 27) && $('#mapModal').hasClass('show')) {
+        closeMapModal();
+      }
+    });
+  });
 })()

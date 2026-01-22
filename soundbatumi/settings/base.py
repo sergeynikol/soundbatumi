@@ -127,7 +127,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+# LANGUAGE_CODE должен соответствовать первому языку в WAGTAIL_CONTENT_LANGUAGES
+LANGUAGE_CODE = "en"
 
 TIME_ZONE = "Asia/Tbilisi"
 
@@ -191,6 +192,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Языки для Wagtail
+# Важно: первый язык должен совпадать с LANGUAGE_CODE
 WAGTAIL_CONTENT_LANGUAGES = (
     ('en', _('English')),
     ('ka', _('Georgian')),
@@ -199,6 +201,10 @@ WAGTAIL_CONTENT_LANGUAGES = (
 
 # Языки для Django локализации
 LANGUAGES = WAGTAIL_CONTENT_LANGUAGES
+
+# Настройки wagtail_localize
+# Убедитесь, что локали включены в админ-панели Wagtail:
+# Settings -> Locales
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

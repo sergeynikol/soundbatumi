@@ -29,7 +29,7 @@
   /* Modern Glassmorphic Header Variables */
   --header-gradient-1: linear-gradient(135deg, rgba(66, 135, 245, 0.15) 0%, rgba(147, 51, 234, 0.1) 100%);
   --header-gradient-2: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.15) 100%);
-  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-border: rgba(255, 255, 255, 0.18);
   --glass-shadow: rgba(31, 38, 135, 0.37);
   --accent-blue: #4287f5;
@@ -54,7 +54,7 @@
   /* Modern Glassmorphic Header Variables - Dark Theme */
   --header-gradient-1: linear-gradient(135deg, rgba(66, 135, 245, 0.2) 0%, rgba(147, 51, 234, 0.15) 100%);
   --header-gradient-2: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.2) 100%);
-  --glass-bg: rgba(17, 25, 40, 0.75);
+  --glass-bg: rgba(17, 25, 40, 0.4);
   --glass-border: rgba(255, 255, 255, 0.125);
   --glass-shadow: rgba(0, 0, 0, 0.5);
 }
@@ -240,6 +240,7 @@ h6 {
   padding: 0;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Poppins', sans-serif;
+  overflow: visible !important;
 }
 
 #header.modern-glass-header::before {
@@ -265,13 +266,13 @@ h6 {
   right: 0;
   bottom: 0;
   background: var(--header-gradient-1);
-  opacity: 0.3;
+  opacity: 0.2;
   z-index: -2;
   transition: opacity 0.5s ease;
 }
 
 #header.modern-glass-header.header-scrolled::after {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 /* Animated Background Particles */
@@ -319,7 +320,7 @@ h6 {
 }
 
 /* Old Header Fallback */
-#header {
+#header:not(.modern-glass-header) {
   transition: all 0.5s ease;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px) saturate(180%);
@@ -333,15 +334,25 @@ h6 {
   overflow: visible !important; /* Не обрезаем мобильное меню */
 }
 
-[data-theme="dark"] #header {
+/* Убедимся, что modern-glass-header не имеет прямого background */
+#header.modern-glass-header {
+  background: transparent !important;
+}
+
+[data-theme="dark"] #header:not(.modern-glass-header) {
   background: rgba(22, 33, 62, 0.85);
   border-bottom: 1px solid rgba(79, 172, 254, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+[data-theme="dark"] #header.modern-glass-header {
+  background: transparent !important;
+}
+
 #header .container {
   flex-wrap: wrap;
   gap: 15px;
+  overflow: visible !important;
 }
 
 #header .logo {
@@ -3366,24 +3377,129 @@ section {
 
 .section-title {
   text-align: center;
-  padding-bottom: 30px;
+  padding: 40px 20px 35px;
   position: relative;
+  margin-bottom: 30px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
 }
 
+
 .section-title h2 {
-  font-size: 32px;
-  font-weight: bold;
+  font-family: "Noto Serif", serif;
+  font-optical-sizing: auto;
+  font-size: 36px;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
   text-transform: uppercase;
-  margin-bottom: 20px;
-  margin-top: 10px;
-  padding-bottom: 0;
-  color: var(--text-primary);
+  margin-bottom: 15px;
+  margin-top: 0;
+  padding-bottom: 12px;
+  position: relative;
+  color: var(--accent-color);
+  letter-spacing: 1.5px;
+  text-shadow: 
+    0 2px 8px rgba(36, 135, 206, 0.3),
+    0 4px 16px rgba(36, 135, 206, 0.2),
+    0 0 20px rgba(36, 135, 206, 0.15);
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.section-title h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    var(--accent-color) 50%,
+    transparent 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(36, 135, 206, 0.5);
 }
 
 .section-title p {
+  font-family: "Noto Serif", serif;
+  font-optical-sizing: auto;
   margin-bottom: 0;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.7;
   color: var(--text-secondary);
+  position: relative;
+  z-index: 1;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Адаптивные стили для section-title */
+@media (max-width: 992px) {
+  .section-title {
+    padding: 35px 15px 30px;
+  }
+  
+  .section-title h2 {
+    font-size: 30px;
+    letter-spacing: 1px;
+  }
+  
+  .section-title p {
+    font-size: 15px;
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    padding: 30px 15px 25px;
+    margin-bottom: 25px;
+  }
+  
+  .section-title h2 {
+    font-size: 26px;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+  }
+  
+  .section-title h2::after {
+    width: 50px;
+    height: 2px;
+  }
+  
+  .section-title p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    padding: 25px 10px 20px;
+  }
+  
+  .section-title h2 {
+    font-size: 22px;
+    letter-spacing: 0.5px;
+  }
+  
+  .section-title p {
+    font-size: 13px;
+  }
 }
 
 /*--------------------------------------------------------------
@@ -4768,9 +4884,16 @@ section {
 /* Main Page Title */
 .main-page-title {
   padding: 5px 0 40px 0;
-  margin-top: 4vh;
+  margin-top: 1vh;
   text-align: center;
   background: var(--bg-primary);
+}
+
+/* Отступ для десктопной версии */
+@media (min-width: 992px) {
+  .main-page-title {
+    margin-top: 7vh;
+  }
 }
 
 .main-page-title h1,
@@ -4800,21 +4923,18 @@ section {
   margin: 0 auto;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(66, 135, 245, 0.2);
-  border: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .banner-slider .carousel-inner {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border: none;
 }
 
 /* Bootstrap carousel стили для banner-slider */
 .banner-slider .carousel-item {
   min-height: 650px;
-  border: none;
 }
 
 .single-banner-part {
@@ -4828,8 +4948,6 @@ section {
   align-items: center;
   justify-content: center;
   padding: 120px 0;
-  border: none;
-  outline: none;
 }
 
 .single-banner-part::before {
@@ -5389,12 +5507,33 @@ section {
   background-color: transparent;
 }
 
+[data-theme="dark"] .section-title {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 [data-theme="dark"] .section-title h2 {
-  color: var(--text-primary);
+  color: var(--accent-color);
+  text-shadow: 
+    0 2px 8px rgba(79, 172, 254, 0.4),
+    0 4px 16px rgba(79, 172, 254, 0.3),
+    0 0 20px rgba(79, 172, 254, 0.2);
+}
+
+[data-theme="dark"] .section-title h2::after {
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    #00f2fe 50%,
+    transparent 100%);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
 }
 
 [data-theme="dark"] .section-title p {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] a {
@@ -5563,10 +5702,12 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 20px !important;
+  padding: 10px 32px 10px 24px !important;
+  min-width: 70px;
   color: var(--accent-color) !important;
   text-decoration: none;
   border-radius: 12px;
+  overflow: visible !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(145deg, rgba(36, 135, 206, 0.12) 0%, rgba(36, 135, 206, 0.08) 100%);
   border: 2px solid rgba(36, 135, 206, 0.2);
@@ -5594,7 +5735,8 @@ section {
 
 .cart-btn i {
   margin-right: 24px;
-  font-size: 28px;
+  margin-left: -8px;
+  font-size: 24px;
   color: var(--accent-color) !important;
   transition: transform 0.3s ease;
   position: relative;
@@ -5639,10 +5781,11 @@ section {
 
 /* PNG иконка корзины */
 .cart-icon-img {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   transition: transform 0.3s ease;
+  margin-left: -8px;
 }
 
 .cart-btn:hover .cart-icon-img {
@@ -5682,6 +5825,16 @@ section {
   #navbar.navbar-mobile .nav-item.cart-button-container .cart-count-badge {
     top: 50% !important;
     right: 10px !important;
+    transform: translateY(-50%) !important;
+  }
+}
+
+/* Центрирование счетчика на десктопной версии */
+@media (min-width: 992px) {
+  .cart-count-badge-desktop,
+  .cart-btn .cart-count-badge {
+    top: 50% !important;
+    right: 5px !important;
     transform: translateY(-50%) !important;
   }
 }
@@ -7603,6 +7756,8 @@ Modern Banner Slider CSS
 
 .modern-banner-slider .slide-text-left {
   text-align: left;
+  padding-left: 10%;
+  margin-left: 0;
 }
 
 .modern-banner-slider .slide-button-wrapper {
@@ -8053,7 +8208,6 @@ Modern Banner Slider CSS
     padding: 18px 35px;
     font-size: 16px;
   }
-}
   
   .modern-banner-slider .slide-title {
     font-size: 56px;
@@ -8806,6 +8960,7 @@ Old Slider Area CSS (for compatibility)
 /* Desktop Layout */
 .header-desktop {
   padding: 1rem 0;
+  overflow: visible;
 }
 
 .header-top-desktop {
@@ -8816,6 +8971,7 @@ Old Slider Area CSS (for compatibility)
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--glass-border);
   position: relative;
+  overflow: visible;
 }
 
 .header-top-desktop::before {
@@ -8845,7 +9001,7 @@ Old Slider Area CSS (for compatibility)
 }
 
 .header-logo-desktop .logo img {
-  max-width: 300px;
+  max-width: 220px;
   height: auto;
   transition: all 0.3s ease;
 }
@@ -8855,6 +9011,8 @@ Old Slider Area CSS (for compatibility)
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  overflow: visible;
+  padding: 5px 0;
 }
 
 /* Glass Button Base */
@@ -8877,6 +9035,7 @@ Old Slider Area CSS (for compatibility)
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 15px 0 rgba(66, 135, 245, 0.2);
+  margin: 3px 0;
 }
 
 .glass-button::before {
@@ -8890,29 +9049,37 @@ Old Slider Area CSS (for compatibility)
   background: radial-gradient(circle, rgba(66, 135, 245, 0.3), transparent);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .glass-button:hover::before {
-  width: 200%;
-  height: 200%;
+  width: 100%;
+  height: 100%;
+  max-width: 200%;
+  max-height: 200%;
 }
 
 .glass-button:hover {
-  transform: translateY(-3px) scale(1.02);
+  transform: scale(1.01);
   box-shadow: 0 8px 25px 0 rgba(66, 135, 245, 0.4);
   border-color: var(--accent-blue);
   color: var(--accent-blue);
 }
 
+.glass-button i,
+.glass-button span {
+  position: relative;
+  z-index: 2;
+}
+
 .glass-button i {
   font-size: 1.3rem;
   transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
 }
 
 .glass-button:hover i {
-  transform: scale(1.2) rotate(5deg);
+  transform: scale(1.15) rotate(5deg);
 }
 
 /* Phone Link */
@@ -9090,6 +9257,7 @@ Old Slider Area CSS (for compatibility)
 .header-mobile {
   display: flex;
   flex-direction: column;
+  overflow: visible;
   gap: 1rem;
   padding: 1rem 0;
   width: 100%;
@@ -9100,18 +9268,15 @@ Old Slider Area CSS (for compatibility)
 .header-mobile-logo {
   text-align: center;
   width: 100%;
-  max-width: 100%;
 }
 
 .header-mobile-logo .logo {
   display: inline-block;
-  max-width: 100%;
 }
 
 .header-mobile-logo .logo img {
-  width: 360px !important;
-  max-width: 90% !important;
-  height: auto !important;
+  max-width: 234px; /* Увеличено на 30% от 180px */
+  height: auto;
   transition: all 0.3s ease;
 }
 
@@ -9119,6 +9284,8 @@ Old Slider Area CSS (for compatibility)
   width: 100%;
   display: flex;
   justify-content: center;
+  overflow: visible;
+  padding: 5px 0;
 }
 
 .header-phone-link-mobile {
@@ -9138,10 +9305,12 @@ Old Slider Area CSS (for compatibility)
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px 0 rgba(66, 135, 245, 0.2);
+  overflow: hidden;
+  margin: 2px 0;
+  position: relative;
 }
 
 .header-phone-link-mobile:hover {
-  transform: translateY(-2px);
   box-shadow: 0 6px 20px 0 rgba(66, 135, 245, 0.3);
   background: linear-gradient(135deg, rgba(66, 135, 245, 0.25), rgba(6, 182, 212, 0.25));
 }
@@ -9217,8 +9386,7 @@ Old Slider Area CSS (for compatibility)
   }
   
   .header-mobile-logo .logo img {
-    width: 384px !important;
-    max-width: 90% !important;
+    max-width: 260px; /* Увеличено на 30% от 200px */
   }
   
   .header-phone-link-mobile {
@@ -9254,8 +9422,7 @@ Old Slider Area CSS (for compatibility)
   }
   
   .header-mobile-logo .logo img {
-    width: 336px !important;
-    max-width: 90% !important;
+    max-width: 221px; /* Увеличено на 30% от 170px */
   }
   
   .header-phone-link-mobile {
@@ -9295,8 +9462,7 @@ Old Slider Area CSS (for compatibility)
   }
   
   .header-mobile-logo .logo img {
-    width: 300px !important;
-    max-width: 90% !important;
+    max-width: 195px; /* Увеличено на 30% от 150px */
   }
   
   .header-phone-link-mobile {
@@ -9351,8 +9517,7 @@ Old Slider Area CSS (for compatibility)
   }
   
   .header-mobile-logo .logo img {
-    width: 264px !important;
-    max-width: 90% !important;
+    max-width: 169px; /* Увеличено на 30% от 130px */
   }
   
   .header-phone-link-mobile {
@@ -9544,7 +9709,7 @@ Old Slider Area CSS (for compatibility)
   }
   
   .header-logo-desktop .logo img {
-    max-width: 320px;
+    max-width: 240px;
   }
   
   .glass-button {
@@ -9575,7 +9740,7 @@ Old Slider Area CSS (for compatibility)
   }
   
   .header-logo-desktop .logo img {
-    max-width: 280px;
+    max-width: 200px;
   }
   
   .glass-button {
@@ -9859,7 +10024,7 @@ Old Slider Area CSS (for compatibility)
   bottom: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 1040 !important;
+  z-index: 999999 !important;
   background: rgba(10, 38, 58, 0.98) !important;
   backdrop-filter: blur(30px) !important;
   -webkit-backdrop-filter: blur(30px) !important;
@@ -9920,7 +10085,7 @@ Old Slider Area CSS (for compatibility)
   position: fixed !important;
   top: 15px !important;
   right: 15px !important;
-  z-index: 1041 !important;
+  z-index: 1000000 !important;
 }
 
 /* Мобильные устройства (<991px) */
@@ -10348,5 +10513,215 @@ Old Slider Area CSS (for compatibility)
     width: 40px;
     height: 40px;
     font-size: 1.1rem;
+  }
+}
+
+/*======================================================================
+# MAP MODAL STYLES - Large Modal for Pickup Map
+======================================================================*/
+
+#mapModal {
+  z-index: 1060 !important;
+}
+
+#mapModal .modal-backdrop {
+  z-index: 1059 !important;
+}
+
+.map-modal-dialog {
+  max-width: 95vw;
+  width: 100%;
+  margin: 1.75rem auto;
+  z-index: 1061 !important;
+  position: relative;
+}
+
+@media (min-width: 576px) {
+  .map-modal-dialog {
+    max-width: 90vw;
+  }
+}
+
+@media (min-width: 992px) {
+  .map-modal-dialog {
+    max-width: 1200px;
+  }
+}
+
+.map-modal-content {
+  background: var(--bg-primary);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.map-modal-header {
+  background: linear-gradient(135deg, rgba(36, 135, 206, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%);
+  border-bottom: 2px solid var(--glass-border);
+  padding: 20px 30px;
+  border-radius: 16px 16px 0 0;
+}
+
+.map-modal-header .modal-title {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.map-modal-header .modal-title i {
+  color: var(--accent-color);
+  font-size: 28px;
+}
+
+.map-modal-header .close,
+.map-modal-close {
+  color: var(--text-primary);
+  opacity: 0.7;
+  font-size: 28px;
+  font-weight: 300;
+  padding: 0;
+  margin: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  cursor: pointer !important;
+  z-index: 9999 !important;
+  position: relative;
+  background: transparent;
+  border: none;
+  outline: none;
+  pointer-events: auto !important;
+}
+
+.map-modal-header .close span,
+.map-modal-close span {
+  pointer-events: none;
+  user-select: none;
+}
+
+.map-modal-header .close:hover,
+.map-modal-close:hover {
+  opacity: 1;
+  background: rgba(36, 135, 206, 0.1);
+  transform: rotate(90deg);
+}
+
+.map-modal-header .close:focus,
+.map-modal-close:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.map-modal-body {
+  padding: 30px;
+  background: var(--bg-secondary);
+}
+
+.map-modal-body iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Map Modal */
+@media (max-width: 991px) {
+  .map-modal-dialog {
+    max-width: 95vw;
+    margin: 1rem auto;
+  }
+  
+  .map-modal-header {
+    padding: 15px 20px;
+  }
+  
+  .map-modal-header .modal-title {
+    font-size: 20px;
+  }
+  
+  .map-modal-header .modal-title i {
+    font-size: 24px;
+  }
+  
+  .map-modal-body {
+    padding: 20px;
+  }
+  
+  .map-modal-body iframe {
+    height: 500px;
+  }
+}
+
+@media (max-width: 767px) {
+  .map-modal-dialog {
+    max-width: 100vw;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+  
+  .map-modal-content {
+    border-radius: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .map-modal-header {
+    padding: 12px 15px;
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+  
+  .map-modal-header .modal-title {
+    font-size: 18px;
+  }
+  
+  .map-modal-header .modal-title i {
+    font-size: 20px;
+  }
+  
+  .map-modal-body {
+    padding: 15px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .map-modal-body iframe {
+    height: 100%;
+    min-height: 400px;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 575px) {
+  .map-modal-header .modal-title {
+    font-size: 16px;
+    gap: 8px;
+  }
+  
+  .map-modal-header .modal-title i {
+    font-size: 18px;
+  }
+  
+  .map-modal-body {
+    padding: 10px;
+  }
+  
+  .map-modal-body iframe {
+    min-height: 350px;
   }
 }

@@ -142,124 +142,37 @@
   /**
    * Mobile nav toggle
    */
-  
-  let originalParentElement = null;
-  let navbarInitialized = false;
-  
-  // Переместить меню в правильное место на старте
-  const initNavbarPosition = function() {
-    if (navbarInitialized) return;
-    
-    const navbar = select('#navbar');
-    const desktopContainer = select('#navbar-container-desktop');
-    const mobileContainer = select('#navbar-container-mobile');
-    
-    if (navbar && mobileContainer && window.innerWidth <= 991) {
-      // На мобильных перемещаем в мобильный контейнер
-      mobileContainer.appendChild(navbar);
-      originalParentElement = mobileContainer;
-    } else if (navbar && desktopContainer) {
-      originalParentElement = desktopContainer;
-    }
-    
-    navbarInitialized = true;
-  };
-  
-  // Инициализация при загрузке
-  window.addEventListener('load', initNavbarPosition);
-  window.addEventListener('resize', initNavbarPosition);
-  
-  // Функция закрытия меню
-  const closeMobileMenu = function() {
-    const navbar = select('#navbar');
-    const body = document.body;
-    const toggleBtn = select('.mobile-nav-toggle');
-    
-    if (navbar && navbar.classList.contains('navbar-mobile')) {
-      navbar.classList.remove('navbar-mobile');
+  on('click', '.mobile-nav-toggle', function(e) {
+    try {
+      const navbar = select('#navbar');
+      const body = document.body;
       
-      // Вернуть меню обратно
-      if (originalParentElement) {
-        originalParentElement.appendChild(navbar);
-      }
-      
-      // Вернуть иконку бургера
-      if (toggleBtn) {
-        toggleBtn.classList.remove('bi-x');
-        toggleBtn.classList.add('bi-list');
-      }
-      
-      body.style.overflow = '';
-      body.style.position = '';
-      body.style.width = '';
-    }
-  };
-  
-  const toggleMobileMenu = function(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    const navbar = select('#navbar');
-    const body = document.body;
-    
-    if (navbar) {
-      const isOpening = !navbar.classList.contains('navbar-mobile');
-      
-      if (isOpening) {
-        // ОТКРЫВАЕМ меню
-        navbar.classList.add('navbar-mobile');
-        this.classList.remove('bi-list');
-        this.classList.add('bi-x');
+      if (navbar) {
+        const isMobile = navbar.classList.contains('navbar-mobile');
         
-        originalParentElement = navbar.parentElement;
-        document.body.appendChild(navbar);
-        
-        body.style.overflow = 'hidden';
-        body.style.position = 'fixed';
-        body.style.width = '100%';
-      } else {
-        // ЗАКРЫВАЕМ меню
-        closeMobileMenu();
+        if (isMobile) {
+          // Закрываем меню
+          navbar.classList.remove('navbar-mobile');
+          body.style.overflow = '';
+          body.style.position = '';
+        } else {
+          // Открываем меню
+          navbar.classList.add('navbar-mobile');
+          body.style.overflow = 'hidden';
+          body.style.position = 'fixed';
+          body.style.width = '100%';
+        }
       }
-    }
-  };
-  
-  // Закрытие меню при клике на ссылку
-  const closeMobileMenuOnLinkClick = function(e) {
-    closeMobileMenu();
-  };
-  
-  // Обработчик через делегирование событий
-  document.addEventListener('click', function(e) {
-    let target = e.target;
-    while (target && target !== document) {
-      if (target.classList && target.classList.contains('mobile-nav-toggle')) {
-        toggleMobileMenu.call(target, e);
-        return;
+      
+      if (this) {
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
       }
-      target = target.parentElement;
+    } catch (e) {
+      console.error('Error in mobile nav toggle:', e);
     }
-  });
-  
-  document.addEventListener('touchend', function(e) {
-    let target = e.target;
-    while (target && target !== document) {
-      if (target.classList && target.classList.contains('mobile-nav-toggle')) {
-        e.preventDefault();
-        toggleMobileMenu.call(target, e);
-        return;
-      }
-      target = target.parentElement;
-    }
-  }, { passive: false });
+  })
 
-  /**
-   * Mobile nav - close on link click
-   */
-  on('click', '#navbar.navbar-mobile .nav-link:not(.dropdown-toggle):not(.auth-btn-trigger):not(.cart-btn)', closeMobileMenuOnLinkClick, true);
-  
   /**
    * Mobile nav dropdowns activate
    */
@@ -531,8 +444,131 @@
    */
   const modernBannerCarousel = document.getElementById('modernBannerCarousel');
   if (modernBannerCarousel) {
-    // Reset animations when slide changes
-    modernBannerCarousel.addEventListener('slide.bs.carousel', function (e) {
+    // Функция для разбивки текста на строки и анимации построчно
+    function animateTitleByLines(titleElement) {
+      if (!titleElement) return;
+      
+      // Сохраняем оригинальный текст и стили
+      const originalText = titleElement.textContent.trim();
+      const computedStyle = window.getComputedStyle(titleElement);
+      const maxWidth = titleElement.offsetWidth || titleElement.parentElement.offsetWidth;
+      
+      // Создаем временный элемент для измерения
+      const tempSpan = document.createElement('span');
+      tempSpan.style.cssText = `
+        position: absolute;
+        visibility: hidden;
+        white-space: nowrap;
+        font-family: ${computedStyle.fontFamily};
+        font-size: ${computedStyle.fontSize};
+        font-weight: ${computedStyle.fontWeight};
+        letter-spacing: ${computedStyle.letterSpacing};
+        width: ${maxWidth}px;
+      `;
+      document.body.appendChild(tempSpan);
+      
+      // Разбиваем текст на слова
+      const words = originalText.split(' ');
+      const lines = [];
+      let currentLine = [];
+      
+      words.forEach((word) => {
+        const testLine = currentLine.length > 0 ? currentLine.join(' ') + ' ' + word : word;
+        tempSpan.textContent = testLine;
+        
+        if (tempSpan.offsetWidth > maxWidth && currentLine.length > 0) {
+          lines.push(currentLine.join(' '));
+          currentLine = [word];
+        } else {
+          currentLine.push(word);
+        }
+      });
+      
+      if (currentLine.length > 0) {
+        lines.push(currentLine.join(' '));
+      }
+      
+      document.body.removeChild(tempSpan);
+      
+      // Очищаем содержимое и создаем обертку для строк
+      titleElement.innerHTML = '';
+      titleElement.style.display = 'block';
+      
+      lines.forEach((line, lineIndex) => {
+        const lineWrapper = document.createElement('span');
+        lineWrapper.className = 'slide-title-line-wrapper';
+        lineWrapper.style.display = 'block';
+        lineWrapper.style.overflow = 'hidden';
+        lineWrapper.style.lineHeight = computedStyle.lineHeight;
+        
+        const lineSpan = document.createElement('span');
+        lineSpan.className = 'slide-title-line';
+        lineSpan.textContent = line;
+        lineSpan.style.animationDelay = (lineIndex * 0.15) + 's';
+        lineSpan.style.display = 'inline-block';
+        lineSpan.style.width = '100%';
+        
+        lineWrapper.appendChild(lineSpan);
+        titleElement.appendChild(lineWrapper);
+      });
+    }
+    
+    // Функция для анимации слайда
+    function animateSlide(slideElement) {
+      const slideTextWrapper = slideElement.querySelector('.slide-text-wrapper');
+      if (!slideTextWrapper) return;
+      
+      const subtitle = slideTextWrapper.querySelector('.slide-subtitle');
+      const title = slideTextWrapper.querySelector('.slide-title, h1, h2, h3, h4, h5, h6');
+      const paragraphs = slideTextWrapper.querySelectorAll('p');
+      const btn = slideTextWrapper.querySelector('.slide-btn, a[class*="btn"]');
+      
+      // Анимация подзаголовка
+      if (subtitle) {
+        subtitle.style.opacity = '0';
+        subtitle.style.transform = 'translateX(-80px)';
+        setTimeout(() => {
+          subtitle.style.opacity = '1';
+          subtitle.style.transform = 'translateX(0)';
+          subtitle.style.animation = 'slideInFromLeft 0.8s ease both';
+        }, 300);
+      }
+      
+      // Анимация заголовка построчно
+      if (title) {
+        title.style.opacity = '0';
+        // Разбиваем на строки и анимируем
+        setTimeout(() => {
+          animateTitleByLines(title);
+          title.style.opacity = '1';
+        }, 500);
+      }
+      
+      // Анимация параграфов
+      paragraphs.forEach((p, index) => {
+        p.style.opacity = '0';
+        p.style.transform = 'translateY(40px)';
+        setTimeout(() => {
+          p.style.opacity = '1';
+          p.style.transform = 'translateY(0)';
+          p.style.animation = 'fadeInUp 1s ease both';
+        }, 700 + (index * 150));
+      });
+      
+      // Анимация кнопки
+      if (btn) {
+        btn.style.opacity = '0';
+        btn.style.transform = 'translateY(40px)';
+        setTimeout(() => {
+          btn.style.opacity = '1';
+          btn.style.transform = 'translateY(0)';
+          btn.style.animation = 'fadeInUp 1s ease both';
+        }, 900);
+      }
+    }
+    
+    // Reset animations when slide changes (Bootstrap 4 событие)
+    $(modernBannerCarousel).on('slide.bs.carousel', function (e) {
       const currentSlide = e.relatedTarget;
       const slideTextWrapper = currentSlide.querySelector('.slide-text-wrapper');
       if (slideTextWrapper) {
@@ -545,47 +581,11 @@
       }
     });
     
-    // Animate elements when slide is shown
-    modernBannerCarousel.addEventListener('slid.bs.carousel', function (e) {
-      const activeSlide = e.target.querySelector('.carousel-item.active');
-      const slideTextWrapper = activeSlide.querySelector('.slide-text-wrapper');
-      if (slideTextWrapper) {
-        const subtitle = slideTextWrapper.querySelector('.slide-subtitle');
-        const title = slideTextWrapper.querySelector('.slide-title, h1, h2, h3, h4, h5, h6');
-        const paragraphs = slideTextWrapper.querySelectorAll('p');
-        const btn = slideTextWrapper.querySelector('.slide-btn, a[class*="btn"]');
-        
-        if (subtitle) {
-          setTimeout(() => {
-            subtitle.style.opacity = '1';
-            subtitle.style.transform = 'translateX(0)';
-            subtitle.style.animation = 'slideInFromLeft 0.8s ease both';
-          }, 300);
-        }
-        
-        if (title) {
-          setTimeout(() => {
-            title.style.opacity = '1';
-            title.style.transform = 'translateX(0)';
-            title.style.animation = 'slideInFromLeft 1s ease both';
-          }, 500);
-        }
-        
-        paragraphs.forEach((p, index) => {
-          setTimeout(() => {
-            p.style.opacity = '1';
-            p.style.transform = 'translateY(0)';
-            p.style.animation = 'fadeInUp 1s ease both';
-          }, 700 + (index * 150));
-        });
-        
-        if (btn) {
-          setTimeout(() => {
-            btn.style.opacity = '1';
-            btn.style.transform = 'translateY(0)';
-            btn.style.animation = 'fadeInUp 1s ease both';
-          }, 900);
-        }
+    // Animate elements when slide is shown (Bootstrap 4 событие)
+    $(modernBannerCarousel).on('slid.bs.carousel', function (e) {
+      const activeSlide = modernBannerCarousel.querySelector('.carousel-item.active');
+      if (activeSlide) {
+        animateSlide(activeSlide);
       }
     });
     
@@ -593,50 +593,103 @@
     window.addEventListener('load', function() {
       const firstSlide = modernBannerCarousel.querySelector('.carousel-item.active');
       if (firstSlide) {
-        const slideTextWrapper = firstSlide.querySelector('.slide-text-wrapper');
-        if (slideTextWrapper) {
-          const subtitle = slideTextWrapper.querySelector('.slide-subtitle');
-          const title = slideTextWrapper.querySelector('.slide-title, h1, h2, h3, h4, h5, h6');
-          const paragraphs = slideTextWrapper.querySelectorAll('p');
-          const btn = slideTextWrapper.querySelector('.slide-btn, a[class*="btn"]');
-          
-          if (subtitle) {
-            setTimeout(() => {
-              subtitle.style.opacity = '1';
-              subtitle.style.transform = 'translateX(0)';
-            }, 500);
-          }
-          
-          if (title) {
-            setTimeout(() => {
-              title.style.opacity = '1';
-              title.style.transform = 'translateX(0)';
-            }, 700);
-          }
-          
-          paragraphs.forEach((p, index) => {
-            setTimeout(() => {
-              p.style.opacity = '1';
-              p.style.transform = 'translateY(0)';
-            }, 900 + (index * 150));
-          });
-          
-          if (btn) {
-            setTimeout(() => {
-              btn.style.opacity = '1';
-              btn.style.transform = 'translateY(0)';
-            }, 1100);
-          }
-        }
+        setTimeout(() => {
+          animateSlide(firstSlide);
+        }, 500);
       }
     });
+  }
+
+  /**
+   * Footer Artists Carousel - Enhanced with dynamic indicators and smooth animations
+   */
+  const footerCarousel = document.getElementById('carouselExampleInterval');
+  if (footerCarousel && typeof jQuery !== 'undefined') {
+    // Function to update indicators dynamically
+    function updateFooterCarouselIndicators() {
+      const indicatorsContainer = footerCarousel.querySelector('.footer-carousel-indicators');
+      if (!indicatorsContainer) return;
+      
+      const items = footerCarousel.querySelectorAll('.carousel-item');
+      const existingIndicators = indicatorsContainer.querySelectorAll('li');
+      
+      // Clear all existing indicators
+      existingIndicators.forEach(indicator => indicator.remove());
+      
+      // Add indicators for all carousel items
+      items.forEach((item, index) => {
+        const indicator = document.createElement('li');
+        indicator.setAttribute('data-target', '#carouselExampleInterval');
+        indicator.setAttribute('data-slide-to', index.toString());
+        if (item.classList.contains('active')) {
+          indicator.classList.add('active');
+        }
+        indicatorsContainer.appendChild(indicator);
+      });
+    }
+    
+    // Update indicators on carousel slide
+    jQuery(footerCarousel).on('slid.bs.carousel', function() {
+      const indicators = footerCarousel.querySelectorAll('.footer-carousel-indicators li');
+      const items = footerCarousel.querySelectorAll('.carousel-item');
+      const activeIndex = Array.from(items).findIndex(
+        item => item.classList.contains('active')
+      );
+      
+      indicators.forEach((indicator, index) => {
+        if (index === activeIndex) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
+      
+      // Add fade animation to active item
+      const activeItem = footerCarousel.querySelector('.carousel-item.active');
+      if (activeItem) {
+        activeItem.style.animation = 'slideInFade 0.8s ease-out';
+      }
+    });
+    
+    // Initialize indicators on page load
+    function initFooterCarousel() {
+      updateFooterCarouselIndicators();
+      
+      // Add smooth transition to carousel items
+      const items = footerCarousel.querySelectorAll('.carousel-item');
+      items.forEach((item) => {
+        if (item.classList.contains('active')) {
+          item.style.animation = 'slideInFade 0.8s ease-out';
+        }
+      });
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFooterCarousel);
+    } else {
+      initFooterCarousel();
+    }
+    
+    // Also initialize on window load as fallback
+    window.addEventListener('load', initFooterCarousel);
+  }
+    
+    // Также запускаем анимацию для первого слайда сразу, если страница уже загружена
+    if (document.readyState === 'complete') {
+      const firstSlide = modernBannerCarousel.querySelector('.carousel-item.active');
+      if (firstSlide) {
+        setTimeout(() => {
+          animateSlide(firstSlide);
+        }, 500);
+      }
+    }
   }
 
   /**
    * Theme Toggle
    */
   const themeToggle = select('#theme-toggle');
-  const themeToggleMobile = select('#theme-toggle-mobile');
   const htmlElement = document.documentElement;
   
   // Get saved theme or default to light
@@ -664,13 +717,6 @@
       }, 300);
     }
     
-    if (themeToggleMobile) {
-      themeToggleMobile.classList.add('theme-switching');
-      setTimeout(() => {
-        themeToggleMobile.classList.remove('theme-switching');
-      }, 300);
-    }
-    
     // Re-initialize background after theme change (debounced)
     themeChangeTimeout = setTimeout(() => {
       try {
@@ -685,15 +731,6 @@
   
   if (themeToggle) {
     themeToggle.addEventListener('click', handleThemeChange);
-  }
-  
-  if (themeToggleMobile) {
-    themeToggleMobile.addEventListener('click', handleThemeChange);
-    // Also add touch event for better mobile support
-    themeToggleMobile.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      handleThemeChange();
-    });
   }
 
   /**
@@ -1369,8 +1406,6 @@
       const customerEmailEl = document.getElementById('customerEmail');
       const deliveryAddressEl = document.getElementById('deliveryAddress');
       const customerCommentEl = document.getElementById('customerComment');
-      const installationDateEl = document.getElementById('installationDate');
-      const installationTimeEl = document.getElementById('installationTime');
       const t = window.TRANSLATIONS || {};
       
       // Проверяем, что все элементы существуют
@@ -1387,8 +1422,6 @@
         customer_email: customerEmailEl ? customerEmailEl.value.trim() : '',
         delivery_address: deliveryAddressEl.value.trim(),
         customer_comment: customerCommentEl ? customerCommentEl.value.trim() : '',
-        installation_date: installationDateEl ? installationDateEl.value.trim() : '',
-        installation_time: installationTimeEl ? installationTimeEl.value.trim() : '',
         cart_items: this.cart
       };
       
@@ -1410,14 +1443,6 @@
       }
       if (!formData.delivery_address) {
         this.showCheckoutError(t.please_enter_address || 'Please enter delivery address');
-        return;
-      }
-      if (!formData.installation_date) {
-        this.showCheckoutError(t.please_enter_installation_date || 'Please select installation date');
-        return;
-      }
-      if (!formData.installation_time) {
-        this.showCheckoutError(t.please_enter_installation_time || 'Please select installation time');
         return;
       }
       if (this.cart.length === 0) {
@@ -2024,10 +2049,76 @@
     }
   }
 
+  /**
+   * Banner Slider (Owl Carousel) with animations
+   */
+  function initBannerSlider() {
+    if (typeof jQuery !== 'undefined' && typeof jQuery.fn.owlCarousel !== 'undefined') {
+      try {
+        const bannerSlider = jQuery('.banner-slider');
+        if (bannerSlider.length > 0) {
+          const owlData = bannerSlider.data('owl.carousel');
+          if (owlData) {
+            console.log('Banner slider already initialized');
+            return;
+          }
+          
+          console.log('Initializing banner slider...');
+          
+          bannerSlider.owlCarousel({
+            items: 1,
+            loop: true,
+            autoplay: true,
+            autoplayTimeout: 6000,
+            autoplayHoverPause: true,
+            smartSpeed: 1000,
+            nav: true,
+            navText: [
+              '<i class="bx bx-chevron-left"></i>',
+              '<i class="bx bx-chevron-right"></i>'
+            ],
+            dots: true,
+            animateOut: 'fadeOut',
+            animateIn: 'fadeIn',
+            onInitialized: function() {
+              // Анимация для первого слайда
+              const activeSlide = bannerSlider.find('.owl-item.active .banner-iner');
+              if (activeSlide.length > 0) {
+                setTimeout(() => {
+                  activeSlide.addClass('animate');
+                }, 100);
+              }
+            },
+            onChanged: function(event) {
+              // Сброс анимации для всех слайдов
+              bannerSlider.find('.banner-iner').removeClass('animate');
+              
+              // Применение анимации к активному слайду
+              const activeSlide = bannerSlider.find('.owl-item.active .banner-iner');
+              if (activeSlide.length > 0) {
+                setTimeout(() => {
+                  activeSlide.addClass('animate');
+                }, 100);
+              }
+            }
+          });
+          
+          console.log('Banner slider initialized successfully');
+        }
+      } catch (e) {
+        console.error('Error initializing banner slider:', e);
+        setTimeout(initBannerSlider, 500);
+      }
+    } else {
+      setTimeout(initBannerSlider, 200);
+    }
+  }
+
   // Initialize shopping cart
   window.addEventListener('DOMContentLoaded', () => {
     window.shoppingCart = new ShoppingCart();
     window.equipmentPhotoGallery = new EquipmentPhotoGallery();
+    initBannerSlider(); // Инициализация слайдера
     
     // Функция для очистки backdrop
     const cleanupBackdrop = () => {
@@ -2077,78 +2168,4 @@
     document.body.style.overflow = '';
   });
 
-  // Map Modal Close Handler - используем нативный JS и jQuery вместе
-  function closeMapModal() {
-    const modal = document.getElementById('mapModal');
-    if (modal) {
-      // Пробуем Bootstrap метод
-      if (typeof $ !== 'undefined' && $.fn.modal) {
-        $('#mapModal').modal('hide');
-      }
-      
-      // Нативный способ закрытия
-      modal.classList.remove('show');
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('modal-open');
-      document.body.style.paddingRight = '';
-      document.body.style.overflow = '';
-      
-      // Удаляем backdrop
-      const backdrops = document.querySelectorAll('.modal-backdrop');
-      backdrops.forEach(backdrop => backdrop.remove());
-    }
-  }
-
-  // Обработчик для кнопки закрытия - используем делегирование событий
-  document.addEventListener('click', function(e) {
-    const target = e.target;
-    const closeBtn = target.closest('#mapModal .close, #mapModal .map-modal-close');
-    
-    if (closeBtn) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      closeMapModal();
-      return false;
-    }
-  }, true); // Используем capture phase для перехвата события раньше
-
-  // jQuery обработчик как резерв
-  $(document).ready(function() {
-    // Прямой обработчик на кнопку
-    $('#mapModal .close, #mapModal .map-modal-close').on('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeMapModal();
-      return false;
-    });
-
-    // Обработчик на span внутри кнопки
-    $('#mapModal .close span, #mapModal .map-modal-close span').on('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      $(this).closest('.close, .map-modal-close').trigger('click');
-      return false;
-    });
-
-    // Очистка при закрытии модального окна
-    $('#mapModal').on('hidden.bs.modal', function() {
-      closeMapModal();
-    });
-
-    // Закрытие по клику на backdrop
-    $(document).on('click', '#mapModal.modal', function(e) {
-      if ($(e.target).is('#mapModal')) {
-        closeMapModal();
-      }
-    });
-
-    // Закрытие по ESC
-    $(document).on('keydown', function(e) {
-      if ((e.key === 'Escape' || e.keyCode === 27) && $('#mapModal').hasClass('show')) {
-        closeMapModal();
-      }
-    });
-  });
 })()
