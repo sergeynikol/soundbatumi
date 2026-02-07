@@ -1,11 +1,55 @@
 from django.apps import AppConfig
 
 
+def _patch_wagtail_localize_extract():
+    """
+    Патч для wagtail_localize: обрабатываем None в optional полях StreamField.
+    Иначе при переводе страницы возникает TypeError: string must be either a
+    StringValue or a str. Got NoneType
+    """
+    try:
+        from wagtail_localize.segments import types as segment_types
+        from wagtail_localize.segments import extract as segment_extract
+        from wagtail_localize.segments import ingest as segment_ingest
+
+        _OriginalStringSegmentValue = segment_types.StringSegmentValue
+
+        class PatchedStringSegmentValue(_OriginalStringSegmentValue):
+            def __init__(self, path, string, attrs=None, **kwargs):
+                if string is None:
+                    string = ""
+                super().__init__(path, string, attrs=attrs, **kwargs)
+
+        # Патчим во всех модулях, где используется StringSegmentValue
+        segment_types.StringSegmentValue = PatchedStringSegmentValue
+        segment_extract.StringSegmentValue = PatchedStringSegmentValue
+        segment_ingest.StringSegmentValue = PatchedStringSegmentValue
+
+        # segments.__init__ реэкспортирует из types — обновим и там
+        import wagtail_localize.segments as segments_mod
+        segments_mod.StringSegmentValue = PatchedStringSegmentValue
+
+        from wagtail_localize.segments.extract import StreamFieldSegmentExtractor
+
+        _original_handle_block = StreamFieldSegmentExtractor.handle_block
+
+        def patched_handle_block(self, block_type, block_value, raw_value=None):
+            if block_value is None:
+                return []
+            return _original_handle_block(self, block_type, block_value, raw_value)
+
+        StreamFieldSegmentExtractor.handle_block = patched_handle_block
+    except ImportError:
+        pass
+
+
 class HomeConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "home"
     
     def ready(self):
+        _patch_wagtail_localize_extract()
+
         # Регистрируем snippets только если таблицы уже созданы
         # Это предотвращает ошибки при открытии страницы snippets
         try:
